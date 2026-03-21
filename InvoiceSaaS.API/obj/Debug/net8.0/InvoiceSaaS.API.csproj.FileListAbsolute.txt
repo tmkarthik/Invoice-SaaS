@@ -91,3 +91,5 @@ C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\obj\Debug\net8.0\InvoiceSaaS.API.gen
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\obj\Debug\net8.0\ref\InvoiceSaaS.API.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\FluentValidation.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll

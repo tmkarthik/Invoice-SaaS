@@ -17,6 +17,11 @@ public sealed class GenericRepository<T>(InvoiceSaaSDbContext dbContext) : IGene
         return await dbContext.Set<T>().ToListAsync();
     }
 
+    public IQueryable<T> GetQueryable()
+    {
+        return dbContext.Set<T>().AsQueryable();
+    }
+
     public async Task AddAsync(T entity)
     {
         await dbContext.Set<T>().AddAsync(entity);

@@ -166,3 +166,7 @@ C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\InvoiceSaaS.Tests
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\ref\InvoiceSaaS.Tests.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\Castle.Core.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\FluentValidation.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\Moq.dll
