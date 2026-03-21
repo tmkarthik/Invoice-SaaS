@@ -5,6 +5,7 @@ namespace InvoiceSaaS.Domain.Entities;
 public sealed class Customer : BaseEntity
 {
     private readonly List<Invoice> _invoices = [];
+    private readonly List<CustomerAddress> _customerAddresses = [];
 
     public Customer(Guid tenantId, Guid companyId, string displayName, string email, string? gstNumber = null)
     {
@@ -31,6 +32,62 @@ public sealed class Customer : BaseEntity
     public string Email { get; private set; } = string.Empty;
     public string? GstNumber { get; private set; }
     public IReadOnlyCollection<Invoice> Invoices => _invoices.AsReadOnly();
+    public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses.AsReadOnly();
+
+    public void AddAddress(CustomerAddress address)
+    {
+        if (address == null) throw new ArgumentNullException(nameof(address));
+        if (address.TenantId != TenantId) throw new InvalidOperationException("Address TenantId mismatch.");
+        
+        // Prevent duplicates (Customer + Address + Type combination)
+        if (_customerAddresses.Any(a => a.AddressId == address.AddressId && a.AddressType == address.AddressType))
+        {
+            return;
+        }
+
+        _customerAddresses.Add(address);
+        Touch();
+    }
+
+    public void RemoveAddress(Guid addressId)
+    {
+        var address = _customerAddresses.FirstOrDefault(a => a.AddressId == addressId);
+        if (address != null)
+        {
+            _customerAddresses.Remove(address);
+            Touch();
+        }
+    }
+
+    public void AddBillingAddress(Address address, bool isDefault = true)
+    {
+        if (address.TenantId != TenantId) throw new InvalidOperationException("Address TenantId mismatch.");
+
+        if (isDefault)
+        {
+            foreach (var ca in _customerAddresses.Where(a => a.AddressType == Enums.AddressType.Billing))
+            {
+                ca.SetDefault(false);
+            }
+        }
+
+        AddAddress(new CustomerAddress(TenantId, Id, address.Id, Enums.AddressType.Billing, isDefault));
+    }
+
+    public void AddShippingAddress(Address address, bool isDefault = true)
+    {
+        if (address.TenantId != TenantId) throw new InvalidOperationException("Address TenantId mismatch.");
+
+        if (isDefault)
+        {
+            foreach (var ca in _customerAddresses.Where(a => a.AddressType == Enums.AddressType.Shipping))
+            {
+                ca.SetDefault(false);
+            }
+        }
+
+        AddAddress(new CustomerAddress(TenantId, Id, address.Id, Enums.AddressType.Shipping, isDefault));
+    }
 
     public void UpdateDetails(string displayName, string email, string? gstNumber)
     {
