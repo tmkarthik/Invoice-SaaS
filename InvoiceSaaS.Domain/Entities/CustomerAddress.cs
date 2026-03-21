@@ -27,9 +27,15 @@ public sealed class CustomerAddress : BaseEntity
     public AddressType AddressType { get; private set; }
     public bool IsDefault { get; private set; }
 
-    public void SetDefault(bool isDefault)
+    public void SetDefault()
     {
-        IsDefault = isDefault;
+        IsDefault = true;
+        Touch();
+    }
+
+    public void RemoveDefault()
+    {
+        IsDefault = false;
         Touch();
     }
 }

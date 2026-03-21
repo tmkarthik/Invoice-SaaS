@@ -1,4 +1,5 @@
 using InvoiceSaaS.Domain.Common;
+using InvoiceSaaS.Domain.Enums;
 
 namespace InvoiceSaaS.Domain.Entities;
 
@@ -59,6 +60,11 @@ public sealed class Customer : BaseEntity
         }
     }
 
+    public CustomerAddress? GetDefaultAddress(AddressType type)
+    {
+        return _customerAddresses.FirstOrDefault(a => a.AddressType == type && a.IsDefault);
+    }
+
     public void AddBillingAddress(Address address, bool isDefault = true)
     {
         if (address.TenantId != TenantId) throw new InvalidOperationException("Address TenantId mismatch.");
@@ -67,7 +73,7 @@ public sealed class Customer : BaseEntity
         {
             foreach (var ca in _customerAddresses.Where(a => a.AddressType == Enums.AddressType.Billing))
             {
-                ca.SetDefault(false);
+                ca.RemoveDefault();
             }
         }
 
@@ -82,7 +88,7 @@ public sealed class Customer : BaseEntity
         {
             foreach (var ca in _customerAddresses.Where(a => a.AddressType == Enums.AddressType.Shipping))
             {
-                ca.SetDefault(false);
+                ca.RemoveDefault();
             }
         }
 

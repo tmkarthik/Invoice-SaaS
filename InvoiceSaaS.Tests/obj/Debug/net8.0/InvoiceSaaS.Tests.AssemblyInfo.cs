@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InvoiceSaaS.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ae85677dceb370e98bf6aae5ec55197a5e46689")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7aa084b5381a603bf22fead7fe74d60d710349a")]
 [assembly: System.Reflection.AssemblyProductAttribute("InvoiceSaaS.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InvoiceSaaS.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
