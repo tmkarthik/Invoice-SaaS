@@ -46,6 +46,9 @@ public static class DependencyInjection
                 : new EfInvoiceRepository(serviceProvider.GetRequiredService<InvoiceSaaSDbContext>());
         });
 
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         return services;
     }
 }
