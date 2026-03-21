@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "oxuKOORma2ewVzi4Qihs14S7z9xl7BVxIJMXsCH5pLs=",
+  "Source": "InvoiceSaaS.API",
+  "BasePath": "_content/InvoiceSaaS.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

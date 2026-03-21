@@ -1,0 +1,17 @@
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.csproj.AssemblyReference.cache
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.AssemblyInfoInputs.cache
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.AssemblyInfo.cs
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Infrastructure.deps.json
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Infrastructure.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Infrastructure.pdb
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Application.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Domain.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Application.pdb
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\bin\Release\net8.0\InvoiceSaaS.Domain.pdb
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceS.AB20B89C.Up2Date
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\refint\InvoiceSaaS.Infrastructure.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\InvoiceSaaS.Infrastructure.pdb
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Infrastructure\obj\Release\net8.0\ref\InvoiceSaaS.Infrastructure.dll
