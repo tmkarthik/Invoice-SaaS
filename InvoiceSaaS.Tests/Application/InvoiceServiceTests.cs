@@ -11,7 +11,8 @@ public sealed class InvoiceServiceTests
     public async Task GetInvoicesAsync_ReturnsSeededInvoice_ForDefaultTenant()
     {
         var repository = new InMemoryInvoiceRepository();
-        var service = new InvoiceService(repository);
+        var unitOfWorkMock = new Moq.Mock<InvoiceSaaS.Application.Interfaces.IUnitOfWork>();
+        var service = new InvoiceService(repository, unitOfWorkMock.Object);
 
         var result = await service.GetInvoicesAsync(DefaultTenant);
 

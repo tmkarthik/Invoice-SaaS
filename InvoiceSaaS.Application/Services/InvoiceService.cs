@@ -1,9 +1,12 @@
 using InvoiceSaaS.Application.DTOs;
 using InvoiceSaaS.Application.Interfaces;
+using InvoiceSaaS.Domain.Entities;
 
 namespace InvoiceSaaS.Application.Services;
 
-public sealed class InvoiceService(IInvoiceRepository invoiceRepository) : IInvoiceService
+public sealed class InvoiceService(
+    IInvoiceRepository invoiceRepository,
+    IUnitOfWork unitOfWork) : IInvoiceService
 {
     public async Task<IReadOnlyCollection<InvoiceDto>> GetInvoicesAsync(Guid tenantId, CancellationToken cancellationToken = default)
     {
@@ -20,5 +23,33 @@ public sealed class InvoiceService(IInvoiceRepository invoiceRepository) : IInvo
                 Status = x.Status.ToString()
             })
             .ToArray();
+    }
+
+    public async Task<InvoiceDto> CreateInvoiceAsync(Guid tenantId, CreateInvoiceDto dto, CancellationToken cancellationToken = default)
+    {
+        var invoice = new Invoice(tenantId, dto.CustomerId, dto.Number, dto.IssueDateUtc, dto.DueDateUtc, dto.Currency);
+        if (dto.Discount > 0)
+        {
+            invoice.SetDiscount(dto.Discount);
+        }
+
+        foreach (var itemDto in dto.Items)
+        {
+            var item = new InvoiceItem(invoice.Id, itemDto.ProductId, itemDto.Description, itemDto.Quantity, itemDto.UnitPrice, itemDto.TaxRate);
+            invoice.AddItem(item);
+        }
+
+        await invoiceRepository.AddAsync(invoice, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new InvoiceDto
+        {
+            Id = invoice.Id,
+            Number = invoice.Number,
+            CustomerName = string.Empty,
+            Amount = invoice.Amount,
+            DueDateUtc = invoice.DueDateUtc,
+            Status = invoice.Status.ToString()
+        };
     }
 }

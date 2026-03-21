@@ -10,7 +10,7 @@ public sealed class InvoiceItem : BaseEntity
         if (productId == Guid.Empty) throw new ArgumentException("ProductId cannot be empty.", nameof(productId));
         if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("Description is required.", nameof(description));
         if (quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
-        if (unitPrice < 0) throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price cannot be negative.");
+        if (unitPrice <= 0) throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price must be greater than zero.");
         if (taxRate < 0) throw new ArgumentOutOfRangeException(nameof(taxRate), "Tax rate cannot be negative.");
 
         InvoiceId = invoiceId;

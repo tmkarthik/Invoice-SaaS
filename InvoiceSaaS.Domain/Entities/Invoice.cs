@@ -34,6 +34,9 @@ public sealed class Invoice : BaseEntity
     public DateTime IssueDateUtc { get; private set; }
     public DateTime DueDateUtc { get; private set; }
     public string Currency { get; private set; } = "USD";
+    public decimal Subtotal { get; private set; }
+    public decimal TotalTax { get; private set; }
+    public decimal Discount { get; private set; }
     public decimal Amount { get; private set; }
     public string? Notes { get; private set; }
     public InvoiceStatus Status { get; private set; } = InvoiceStatus.Draft;
@@ -42,6 +45,14 @@ public sealed class Invoice : BaseEntity
     public void SetStatus(InvoiceStatus status)
     {
         Status = status;
+        Touch();
+    }
+
+    public void SetDiscount(decimal discount)
+    {
+        if (discount < 0) throw new ArgumentOutOfRangeException(nameof(discount), "Discount cannot be negative.");
+        Discount = discount;
+        RecalculateAmount();
         Touch();
     }
 
@@ -71,6 +82,10 @@ public sealed class Invoice : BaseEntity
 
     private void RecalculateAmount()
     {
-        Amount = _invoiceItems.Sum(x => x.GetLineTotal());
+        Subtotal = _invoiceItems.Sum(x => x.Quantity * x.UnitPrice);
+        TotalTax = _invoiceItems.Sum(x => x.Quantity * x.UnitPrice * x.TaxRate);
+        
+        var calculatedTotal = Subtotal + TotalTax - Discount;
+        Amount = calculatedTotal < 0 ? 0 : calculatedTotal;
     }
 }
