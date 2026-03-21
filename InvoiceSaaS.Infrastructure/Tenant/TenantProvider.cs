@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using InvoiceSaaS.Application.Interfaces;
 
 namespace InvoiceSaaS.Infrastructure.Tenant;
 

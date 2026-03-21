@@ -27,7 +27,7 @@ public sealed class InvoiceService(
 
     public async Task<InvoiceDto> CreateInvoiceAsync(Guid tenantId, CreateInvoiceDto dto, CancellationToken cancellationToken = default)
     {
-        var invoice = new Invoice(tenantId, dto.CustomerId, dto.Number, dto.IssueDateUtc, dto.DueDateUtc, dto.Currency);
+        var invoice = new Invoice(tenantId, dto.CompanyId, dto.CustomerId, dto.Number, dto.IssueDateUtc, dto.DueDateUtc, dto.Currency);
         if (dto.Discount > 0)
         {
             invoice.SetDiscount(dto.Discount);

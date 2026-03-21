@@ -6,6 +6,7 @@ namespace InvoiceSaaS.Application.Services;
 
 public sealed class TemplateService(
     IGenericRepository<Template> templateRepository,
+    ITenantProvider tenantProvider,
     IUnitOfWork unitOfWork) : ITemplateService
 {
     public async Task<TemplateDto?> GetByIdAsync(Guid id)
@@ -22,7 +23,8 @@ public sealed class TemplateService(
 
     public async Task<TemplateDto> CreateAsync(Guid companyId, CreateTemplateDto dto)
     {
-        var template = new Template(companyId, dto.Name, dto.TemplateJson, dto.IsDefault);
+        var tenantId = tenantProvider.GetTenantId();
+        var template = new Template(tenantId, companyId, dto.Name, dto.TemplateJson, dto.IsDefault);
         
         if (dto.IsDefault)
         {

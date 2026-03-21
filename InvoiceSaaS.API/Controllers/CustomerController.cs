@@ -9,7 +9,7 @@ namespace InvoiceSaaS.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public sealed class CustomerController(ICustomerService customerService) : ControllerBase
+public sealed class CustomerController(ICustomerService customerService, ITenantProvider tenantProvider) : ControllerBase
 {
     private Guid GetCompanyId()
     {

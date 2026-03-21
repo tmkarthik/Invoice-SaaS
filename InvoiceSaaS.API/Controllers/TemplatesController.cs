@@ -9,10 +9,11 @@ namespace InvoiceSaaS.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public sealed class TemplatesController(ITemplateService templateService) : ControllerBase
+public sealed class TemplatesController(ITemplateService templateService, ITenantProvider tenantProvider) : ControllerBase
 {
     private Guid GetCompanyId()
     {
+        // For now, continuing with the same logic but acknowledging the hierarchy
         var tenantClaim = User.FindFirst("TenantId")?.Value;
         return Guid.TryParse(tenantClaim, out var tenantId) ? tenantId : Guid.Empty;
     }

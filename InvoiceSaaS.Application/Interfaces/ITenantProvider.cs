@@ -1,4 +1,4 @@
-namespace InvoiceSaaS.Infrastructure.Tenant;
+namespace InvoiceSaaS.Application.Interfaces;
 
 public interface ITenantProvider
 {

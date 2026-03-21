@@ -1,4 +1,4 @@
-using InvoiceSaaS.Infrastructure.Tenant;
+using InvoiceSaaS.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

@@ -6,6 +6,7 @@ namespace InvoiceSaaS.Application.Services;
 
 public sealed class ProductService(
     IGenericRepository<Product> productRepository,
+    ITenantProvider tenantProvider,
     IUnitOfWork unitOfWork) : IProductService
 {
     public async Task<ProductDto?> GetByIdAsync(Guid id)
@@ -38,7 +39,8 @@ public sealed class ProductService(
 
     public async Task<ProductDto> CreateAsync(Guid companyId, CreateProductDto dto)
     {
-        var product = new Product(companyId, dto.Name, dto.UnitPrice, dto.Sku, dto.Description, dto.TaxPercent);
+        var tenantId = tenantProvider.GetTenantId();
+        var product = new Product(tenantId, companyId, dto.Name, dto.UnitPrice, dto.Sku, dto.Description, dto.TaxPercent);
         await productRepository.AddAsync(product);
         await unitOfWork.SaveChangesAsync();
         

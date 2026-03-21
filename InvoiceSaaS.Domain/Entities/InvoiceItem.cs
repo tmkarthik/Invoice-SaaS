@@ -25,6 +25,8 @@ public sealed class InvoiceItem : BaseEntity
     {
     }
 
+    public Tenant? Tenant { get; private set; }
+
     public Guid InvoiceId { get; private set; }
     public Invoice? Invoice { get; private set; }
     public Guid ProductId { get; private set; }

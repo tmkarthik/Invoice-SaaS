@@ -21,13 +21,12 @@ public sealed class InMemoryInvoiceRepository : IInvoiceRepository
 
     private static Invoice SeedInvoice()
     {
-        var customer = new Customer(DefaultCompany, "Acme Corp", "ap@acme.com");
-        customer.SetTenant(DefaultTenant);
+        var customer = new Customer(DefaultTenant, DefaultCompany, "Acme Corp", "ap@acme.com");
 
-        var product = new Product(DefaultCompany, "SaaS Subscription", 1200.00m, "SUBS-001");
-        product.SetTenant(DefaultTenant);
+        var product = new Product(DefaultTenant, DefaultCompany, "SaaS Subscription", 1200.00m, "SUBS-001");
 
         var invoice = new Invoice(
+            DefaultTenant,
             DefaultCompany,
             customer.Id,
             "INV-0001",

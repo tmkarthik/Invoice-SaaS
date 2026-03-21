@@ -8,15 +8,16 @@ public sealed class AuthService(
     IGenericRepository<RefreshToken> refreshTokenRepository,
     IPasswordHasher passwordHasher,
     ITokenService tokenService,
+    ITenantProvider tenantProvider,
     IUnitOfWork unitOfWork) : IAuthService
 {
-    public async Task<AuthResult> RegisterAsync(Guid companyId, string email, string fullName, string password)
+    public async Task<AuthResult> RegisterAsync(Guid tenantId, Guid companyId, string email, string fullName, string password)
     {
         var users = await userRepository.GetAllAsync();
         if (users.Any(u => u.Email == email.ToLowerInvariant()))
             throw new InvalidOperationException("Email already exists.");
 
-        var user = new User(companyId, email, fullName);
+        var user = new User(tenantId, companyId, email, fullName);
         user.SetPassword(passwordHasher.HashPassword(password));
         
         await userRepository.AddAsync(user);

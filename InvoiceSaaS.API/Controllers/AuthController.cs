@@ -13,7 +13,7 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var result = await authService.RegisterAsync(request.CompanyId, request.Email, request.FullName, request.Password);
+        var result = await authService.RegisterAsync(request.TenantId, request.CompanyId, request.Email, request.FullName, request.Password);
         return Ok(ApiResponse.SuccessResponse(result, "User registered successfully"));
     }
 
@@ -45,6 +45,6 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
     }
 }
 
-public record RegisterRequest([Required] Guid CompanyId, [Required] [EmailAddress] string Email, [Required] string FullName, [Required] string Password);
+public record RegisterRequest([Required] Guid TenantId, [Required] Guid CompanyId, [Required] [EmailAddress] string Email, [Required] string FullName, [Required] string Password);
 public record LoginRequest([Required] [EmailAddress] string Email, [Required] string Password);
 public record RefreshRequest([Required] string RefreshToken);

@@ -1,7 +1,6 @@
 using InvoiceSaaS.Application.Common.Models;
 using InvoiceSaaS.Application.DTOs;
 using InvoiceSaaS.Application.Interfaces;
-using InvoiceSaaS.Infrastructure.Tenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

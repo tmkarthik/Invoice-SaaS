@@ -7,13 +7,15 @@ public sealed class Invoice : BaseEntity
 {
     private readonly List<InvoiceItem> _invoiceItems = [];
 
-    public Invoice(Guid companyId, Guid customerId, string number, DateTime issueDateUtc, DateTime dueDateUtc, string currency)
+    public Invoice(Guid tenantId, Guid companyId, Guid customerId, string number, DateTime issueDateUtc, DateTime dueDateUtc, string currency)
     {
+        if (tenantId == Guid.Empty) throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
         if (companyId == Guid.Empty) throw new ArgumentException("CompanyId cannot be empty.", nameof(companyId));
         if (customerId == Guid.Empty) throw new ArgumentException("CustomerId cannot be empty.", nameof(customerId));
         if (string.IsNullOrWhiteSpace(number)) throw new ArgumentException("Invoice number is required.", nameof(number));
         if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency is required.", nameof(currency));
 
+        SetTenant(tenantId);
         CompanyId = companyId;
         CustomerId = customerId;
         Number = number.Trim();
@@ -28,6 +30,7 @@ public sealed class Invoice : BaseEntity
 
     public Guid CompanyId { get; private set; }
     public Company? Company { get; private set; }
+    public Tenant? Tenant { get; private set; }
     public Guid CustomerId { get; private set; }
     public Customer? Customer { get; private set; }
     public string Number { get; private set; } = string.Empty;
@@ -40,7 +43,9 @@ public sealed class Invoice : BaseEntity
     public decimal Amount { get; private set; }
     public string? Notes { get; private set; }
     public InvoiceStatus Status { get; private set; } = InvoiceStatus.Draft;
+    private readonly List<Payment> _payments = [];
     public IReadOnlyCollection<InvoiceItem> InvoiceItems => _invoiceItems.AsReadOnly();
+    public IReadOnlyCollection<Payment> Payments => _payments.AsReadOnly();
 
     public void SetStatus(InvoiceStatus status)
     {

@@ -9,14 +9,20 @@ namespace InvoiceSaaS.Tests.Services;
 public class CustomerServiceTests
 {
     private readonly Mock<IGenericRepository<Customer>> _customerRepositoryMock;
+    private readonly Mock<ITenantProvider> _tenantProviderMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly CustomerService _customerService;
+    private readonly Guid _tenantId = Guid.NewGuid();
 
     public CustomerServiceTests()
     {
         _customerRepositoryMock = new Mock<IGenericRepository<Customer>>();
+        _tenantProviderMock = new Mock<ITenantProvider>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _customerService = new CustomerService(_customerRepositoryMock.Object, _unitOfWorkMock.Object);
+        
+        _tenantProviderMock.Setup(x => x.GetTenantId()).Returns(_tenantId);
+        
+        _customerService = new CustomerService(_customerRepositoryMock.Object, _tenantProviderMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]
@@ -35,7 +41,7 @@ public class CustomerServiceTests
     {
         var customerId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var customer = new Customer(companyId, "Test Customer", "test@test.com", "GST123");
+        var customer = new Customer(_tenantId, companyId, "Test Customer", "test@test.com", "GST123");
         
         _customerRepositoryMock.Setup(x => x.GetByIdAsync(customerId)).ReturnsAsync(customer);
 
@@ -80,7 +86,7 @@ public class CustomerServiceTests
     {
         var customerId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var customer = new Customer(companyId, "Old Name", "old@test.com");
+        var customer = new Customer(_tenantId, companyId, "Old Name", "old@test.com");
         var updateDto = new UpdateCustomerDto("New Name", "new@test.com", "NEWGST");
 
         _customerRepositoryMock.Setup(x => x.GetByIdAsync(customerId)).ReturnsAsync(customer);
@@ -109,7 +115,7 @@ public class CustomerServiceTests
     {
         var customerId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var customer = new Customer(companyId, "Delete Me", "delete@test.com");
+        var customer = new Customer(_tenantId, companyId, "Delete Me", "delete@test.com");
 
         _customerRepositoryMock.Setup(x => x.GetByIdAsync(customerId)).ReturnsAsync(customer);
 

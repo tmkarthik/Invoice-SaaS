@@ -9,14 +9,20 @@ namespace InvoiceSaaS.Tests.Services;
 public class ProductServiceTests
 {
     private readonly Mock<IGenericRepository<Product>> _productRepositoryMock;
+    private readonly Mock<ITenantProvider> _tenantProviderMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly ProductService _productService;
+    private readonly Guid _tenantId = Guid.NewGuid();
 
     public ProductServiceTests()
     {
         _productRepositoryMock = new Mock<IGenericRepository<Product>>();
+        _tenantProviderMock = new Mock<ITenantProvider>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _productService = new ProductService(_productRepositoryMock.Object, _unitOfWorkMock.Object);
+        
+        _tenantProviderMock.Setup(x => x.GetTenantId()).Returns(_tenantId);
+        
+        _productService = new ProductService(_productRepositoryMock.Object, _tenantProviderMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]
@@ -35,7 +41,7 @@ public class ProductServiceTests
     {
         var productId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var product = new Product(companyId, "Test Product", 10.5m, "SKU123", "Description", 5m);
+        var product = new Product(_tenantId, companyId, "Test Product", 10.5m, "SKU123", "Description", 5m);
         
         _productRepositoryMock.Setup(x => x.GetByIdAsync(productId)).ReturnsAsync(product);
 
@@ -82,7 +88,7 @@ public class ProductServiceTests
     {
         var productId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var product = new Product(companyId, "Old Name", 10m, "OLDSKU");
+        var product = new Product(_tenantId, companyId, "Old Name", 10m, "OLDSKU");
         var updateDto = new UpdateProductDto("New Name", 15m, "NEWSKU", "NewDesc", 5m);
 
         _productRepositoryMock.Setup(x => x.GetByIdAsync(productId)).ReturnsAsync(product);
@@ -113,7 +119,7 @@ public class ProductServiceTests
     {
         var productId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var product = new Product(companyId, "Delete Me", 10m, "DELSKU");
+        var product = new Product(_tenantId, companyId, "Delete Me", 10m, "DELSKU");
 
         _productRepositoryMock.Setup(x => x.GetByIdAsync(productId)).ReturnsAsync(product);
 

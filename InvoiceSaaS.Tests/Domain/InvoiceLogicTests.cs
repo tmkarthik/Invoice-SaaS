@@ -4,13 +4,14 @@ namespace InvoiceSaaS.Tests.Domain;
 
 public class InvoiceLogicTests
 {
+    private readonly Guid _tenantId = Guid.NewGuid();
     private readonly Guid _companyId = Guid.NewGuid();
     private readonly Guid _customerId = Guid.NewGuid();
 
     [Fact]
     public void AddItem_WithZeroTax_CalculatesCorrectly()
     {
-        var invoice = new Invoice(_companyId, _customerId, "INV-001", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
+        var invoice = new Invoice(_tenantId, _companyId, _customerId, "INV-001", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
         
         var item = new InvoiceItem(invoice.Id, Guid.NewGuid(), "Item 1", 2, 100m, 0m);
         
@@ -25,7 +26,7 @@ public class InvoiceLogicTests
     [Fact]
     public void AddItem_WithMultipleTaxes_CalculatesCorrectly()
     {
-        var invoice = new Invoice(_companyId, _customerId, "INV-002", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
+        var invoice = new Invoice(_tenantId, _companyId, _customerId, "INV-002", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
         
         var item1 = new InvoiceItem(invoice.Id, Guid.NewGuid(), "Item 1", 1, 100m, 0.10m); 
         var item2 = new InvoiceItem(invoice.Id, Guid.NewGuid(), "Item 2", 2, 50m, 0.05m);  
@@ -41,7 +42,7 @@ public class InvoiceLogicTests
     [Fact]
     public void SetDiscount_DiscountGreaterThanSubtotal_AmountIsZero()
     {
-        var invoice = new Invoice(_companyId, _customerId, "INV-003", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
+        var invoice = new Invoice(_tenantId, _companyId, _customerId, "INV-003", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
         
         var item = new InvoiceItem(invoice.Id, Guid.NewGuid(), "Item 1", 1, 100m, 0m);
         invoice.AddItem(item);
@@ -59,7 +60,7 @@ public class InvoiceLogicTests
     [Fact]
     public void SetDiscount_ValidNumber_CalculatesCorrectly()
     {
-        var invoice = new Invoice(_companyId, _customerId, "INV-004", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
+        var invoice = new Invoice(_tenantId, _companyId, _customerId, "INV-004", DateTime.UtcNow, DateTime.UtcNow.AddDays(30), "USD");
         
         var item = new InvoiceItem(invoice.Id, Guid.NewGuid(), "Item 1", 1, 100m, 0.10m); 
         invoice.AddItem(item);

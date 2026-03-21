@@ -1,7 +1,7 @@
 using System.Reflection;
 using InvoiceSaaS.Domain.Common;
 using InvoiceSaaS.Domain.Entities;
-using InvoiceSaaS.Infrastructure.Tenant;
+using InvoiceSaaS.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceSaaS.Infrastructure.Persistence;

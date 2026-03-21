@@ -6,6 +6,7 @@ namespace InvoiceSaaS.Application.Services;
 
 public sealed class CustomerService(
     IGenericRepository<Customer> customerRepository,
+    ITenantProvider tenantProvider,
     IUnitOfWork unitOfWork) : ICustomerService
 {
     public async Task<CustomerDto?> GetByIdAsync(Guid id)
@@ -38,7 +39,8 @@ public sealed class CustomerService(
 
     public async Task<CustomerDto> CreateAsync(Guid companyId, CreateCustomerDto dto)
     {
-        var customer = new Customer(companyId, dto.DisplayName, dto.Email, dto.GstNumber);
+        var tenantId = tenantProvider.GetTenantId();
+        var customer = new Customer(tenantId, companyId, dto.DisplayName, dto.Email, dto.GstNumber);
         await customerRepository.AddAsync(customer);
         await unitOfWork.SaveChangesAsync();
         

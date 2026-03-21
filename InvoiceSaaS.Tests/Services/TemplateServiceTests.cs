@@ -9,14 +9,20 @@ namespace InvoiceSaaS.Tests.Services;
 public class TemplateServiceTests
 {
     private readonly Mock<IGenericRepository<Template>> _templateRepositoryMock;
+    private readonly Mock<ITenantProvider> _tenantProviderMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly TemplateService _templateService;
+    private readonly Guid _tenantId = Guid.NewGuid();
 
     public TemplateServiceTests()
     {
         _templateRepositoryMock = new Mock<IGenericRepository<Template>>();
+        _tenantProviderMock = new Mock<ITenantProvider>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _templateService = new TemplateService(_templateRepositoryMock.Object, _unitOfWorkMock.Object);
+        
+        _tenantProviderMock.Setup(x => x.GetTenantId()).Returns(_tenantId);
+        
+        _templateService = new TemplateService(_templateRepositoryMock.Object, _tenantProviderMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]
@@ -35,7 +41,7 @@ public class TemplateServiceTests
     {
         var templateId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var template = new Template(companyId, "Invoice Template 1", "{}", true);
+        var template = new Template(_tenantId, companyId, "Invoice Template 1", "{}", true);
         
         _templateRepositoryMock.Setup(x => x.GetByIdAsync(templateId)).ReturnsAsync(template);
 
@@ -68,7 +74,7 @@ public class TemplateServiceTests
     public async Task CreateAsync_WithIsDefault_ShouldUnsetDefaultTemplates()
     {
         var companyId = Guid.NewGuid();
-        var existingTemplate = new Template(companyId, "Old Default", "{}", true);
+        var existingTemplate = new Template(_tenantId, companyId, "Old Default", "{}", true);
         
         var templates = new List<Template> { existingTemplate }.AsQueryable();
         _templateRepositoryMock.Setup(x => x.GetQueryable()).Returns(templates);
@@ -97,7 +103,7 @@ public class TemplateServiceTests
     {
         var templateId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var template = new Template(companyId, "Old Name", "{}");
+        var template = new Template(_tenantId, companyId, "Old Name", "{}");
         var updateDto = new UpdateTemplateDto("New Name", "{\"updated\":true}", false);
 
         _templateRepositoryMock.Setup(x => x.GetByIdAsync(templateId)).ReturnsAsync(template);
@@ -126,7 +132,7 @@ public class TemplateServiceTests
     {
         var templateId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
-        var template = new Template(companyId, "Delete Me", "{}");
+        var template = new Template(_tenantId, companyId, "Delete Me", "{}");
 
         _templateRepositoryMock.Setup(x => x.GetByIdAsync(templateId)).ReturnsAsync(template);
 
