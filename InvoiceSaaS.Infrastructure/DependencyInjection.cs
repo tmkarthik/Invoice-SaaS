@@ -1,4 +1,5 @@
 using InvoiceSaaS.Application.Interfaces;
+using InvoiceSaaS.Infrastructure.Authentication;
 using InvoiceSaaS.Infrastructure.Configurations;
 using InvoiceSaaS.Infrastructure.Persistence;
 using InvoiceSaaS.Infrastructure.Repositories;
@@ -48,6 +49,8 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }

@@ -164,3 +164,5 @@ C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\refint\InvoiceSaa
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\InvoiceSaaS.Tests.pdb
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\InvoiceSaaS.Tests.genruntimeconfig.cache
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\obj\Debug\net8.0\ref\InvoiceSaaS.Tests.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

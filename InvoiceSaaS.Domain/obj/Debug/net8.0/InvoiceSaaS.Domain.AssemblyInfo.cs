@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InvoiceSaaS.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f2f88a21bd881316cb6d8ec40a5963bc5d23156")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+db2a12a311503ca2a9d73fda83098e5efad3870b")]
 [assembly: System.Reflection.AssemblyProductAttribute("InvoiceSaaS.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InvoiceSaaS.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
