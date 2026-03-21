@@ -23,7 +23,21 @@ public sealed class User : BaseEntity
     public Company? Company { get; private set; }
     public string Email { get; private set; } = string.Empty;
     public string FullName { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
+    public string Role { get; private set; } = "User";
     public bool IsActive { get; private set; } = true;
+
+    public void SetPassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+        Touch();
+    }
+
+    public void SetRole(string role)
+    {
+        Role = role.Trim();
+        Touch();
+    }
 
     public void Deactivate()
     {
