@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using InvoiceSaaS.Application.Common.Models;
 using InvoiceSaaS.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,43 +13,22 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        try
-        {
-            var result = await authService.RegisterAsync(request.CompanyId, request.Email, request.FullName, request.Password);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await authService.RegisterAsync(request.CompanyId, request.Email, request.FullName, request.Password);
+        return Ok(ApiResponse.SuccessResponse(result, "User registered successfully"));
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var result = await authService.LoginAsync(request.Email, request.Password);
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
+        var result = await authService.LoginAsync(request.Email, request.Password);
+        return Ok(ApiResponse.SuccessResponse(result, "Login successful"));
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshRequest request)
     {
-        try
-        {
-            var result = await authService.RefreshTokenAsync(request.RefreshToken);
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
+        var result = await authService.RefreshTokenAsync(request.RefreshToken);
+        return Ok(ApiResponse.SuccessResponse(result, "Token refreshed successfully"));
     }
 
     [Authorize]
@@ -59,9 +39,9 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
         if (Guid.TryParse(userIdString, out var userId))
         {
             await authService.LogoutAsync(userId);
-            return Ok(new { message = "Logged out successfully" });
+            return Ok(ApiResponse.SuccessResponse("Logged out successfully"));
         }
-        return BadRequest("Unable to extract user ID");
+        return BadRequest(ApiResponse.Failure("Unable to extract user ID"));
     }
 }
 

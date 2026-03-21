@@ -12,7 +12,7 @@ public sealed class TemplateConfiguration : IEntityTypeConfiguration<Template>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
-        builder.Property(x => x.Content).IsRequired();
+        builder.Property(x => x.TemplateJson).IsRequired();
         builder.Property(x => x.IsDefault).IsRequired();
 
         builder.HasIndex(x => new { x.TenantId, x.Name });
