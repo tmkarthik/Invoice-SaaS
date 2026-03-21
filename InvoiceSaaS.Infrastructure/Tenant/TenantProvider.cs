@@ -40,4 +40,6 @@ public sealed class TenantProvider(IHttpContextAccessor httpContextAccessor) : I
 
         _tenantId = tenantId;
     }
+
+    public bool IsAdmin => httpContextAccessor.HttpContext?.User?.IsInRole("Admin") ?? false;
 }

@@ -20,28 +20,14 @@ public sealed class InvoiceSaaSDbContext(
     public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
     public DbSet<Template> Templates => Set<Template>();
 
-    private Guid CurrentTenantId => _tenantProvider.GetTenantId();
+    public Guid CurrentTenantId => _tenantProvider.GetTenantId();
+    public bool IsAdmin => _tenantProvider.IsAdmin;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(InvoiceSaaSDbContext).Assembly);
-
-        var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(t => typeof(BaseEntity).IsAssignableFrom(t.ClrType))
-            .Select(t => t.ClrType);
-
-        foreach (var type in entityTypes)
-        {
-            var method = typeof(InvoiceSaaSDbContext).GetMethod(nameof(ApplyGlobalFilter), BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.MakeGenericMethod(type);
-            method?.Invoke(this, [modelBuilder]);
-        }
-    }
-
-    private void ApplyGlobalFilter<T>(ModelBuilder modelBuilder) where T : BaseEntity
-    {
-        modelBuilder.Entity<T>().HasQueryFilter(e => e.TenantId == CurrentTenantId && !e.IsDeleted);
+        modelBuilder.ApplyTenantFilter(this);
     }
 
     public override int SaveChanges()

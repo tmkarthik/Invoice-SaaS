@@ -4,4 +4,5 @@ public interface ITenantProvider
 {
     Guid GetTenantId();
     void SetTenantId(Guid tenantId);
+    bool IsAdmin { get; }
 }
