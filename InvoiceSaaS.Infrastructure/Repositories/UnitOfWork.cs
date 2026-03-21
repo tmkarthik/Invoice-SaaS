@@ -1,6 +1,5 @@
 using InvoiceSaaS.Application.Interfaces;
 using InvoiceSaaS.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace InvoiceSaaS.Infrastructure.Repositories;
 
@@ -11,8 +10,18 @@ public sealed class UnitOfWork(InvoiceSaaSDbContext dbContext) : IUnitOfWork
         return dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        return dbContext.Database.BeginTransactionAsync(cancellationToken);
+        await dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await dbContext.Database.CommitTransactionAsync(cancellationToken);
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await dbContext.Database.RollbackTransactionAsync(cancellationToken);
     }
 }
