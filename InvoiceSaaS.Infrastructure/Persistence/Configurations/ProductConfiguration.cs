@@ -1,0 +1,28 @@
+using InvoiceSaaS.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace InvoiceSaaS.Infrastructure.Persistence.Configurations;
+
+public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
+{
+    public void Configure(EntityTypeBuilder<Product> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Name)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.Sku)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(x => x.UnitPrice)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.HasIndex(x => x.Sku);
+        builder.HasIndex(x => x.CompanyId);
+    }
+}
