@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         services.Configure<InfrastructureOptions>(configuration.GetSection(InfrastructureOptions.SectionName));
         services.AddHttpContextAccessor();
-        services.AddScoped<ITenantProvider, HttpTenantProvider>();
+        services.AddScoped<ITenantProvider, TenantProvider>();
         services.AddDbContext<InvoiceSaaSDbContext>((serviceProvider, options) =>
         {
             var infraOptions = serviceProvider.GetRequiredService<IOptions<InfrastructureOptions>>().Value;
