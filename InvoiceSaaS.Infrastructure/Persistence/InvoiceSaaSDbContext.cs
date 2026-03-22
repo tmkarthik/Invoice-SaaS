@@ -45,14 +45,20 @@ public sealed class InvoiceSaaSDbContext(
 
     private void ApplyAuditingRules()
     {
-        var tenantId = _tenantProvider.GetTenantId();
+        // Try to get the tenant ID from context — may be null for anonymous flows (e.g. tenant registration)
+        var tenantId = TryGetTenantId();
 
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.SetTenant(tenantId);
+                    // Only stamp the TenantId if the entity doesn't already have one set.
+                    // This allows services to set TenantId themselves (e.g. TenantService during onboarding).
+                    if (tenantId.HasValue && entry.Entity.TenantId == Guid.Empty)
+                    {
+                        entry.Entity.SetTenant(tenantId.Value);
+                    }
                     entry.Property(x => x.CreatedDate).CurrentValue = DateTime.UtcNow;
                     entry.Property(x => x.UpdatedDate).CurrentValue = DateTime.UtcNow;
                     break;
@@ -66,6 +72,23 @@ public sealed class InvoiceSaaSDbContext(
                     entry.Entity.SoftDelete();
                     break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Safely attempts to resolve the current tenant ID without throwing.
+    /// Returns null for anonymous/system operations (e.g. tenant onboarding).
+    /// </summary>
+    private Guid? TryGetTenantId()
+    {
+        try
+        {
+            var id = _tenantProvider.GetTenantId();
+            return id == Guid.Empty ? null : id;
+        }
+        catch
+        {
+            return null;
         }
     }
 }
