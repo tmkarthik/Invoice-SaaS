@@ -8,6 +8,7 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
+        builder.ToTable("Customers");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
@@ -21,8 +22,9 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired()
             .HasMaxLength(254);
 
-        builder.HasIndex(x => x.Email);
+        builder.HasIndex(x => new { x.TenantId, x.Email }).IsUnique();
         builder.HasIndex(x => x.CompanyId);
+        builder.HasQueryFilter(x => !x.IsDeleted);
 
         builder.HasMany(x => x.Invoices)
             .WithOne(x => x.Customer)

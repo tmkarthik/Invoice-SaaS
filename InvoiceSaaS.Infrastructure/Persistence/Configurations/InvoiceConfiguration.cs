@@ -8,6 +8,7 @@ public sealed class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 {
     public void Configure(EntityTypeBuilder<Invoice> builder)
     {
+        builder.ToTable("Invoices");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Number)
@@ -25,9 +26,24 @@ public sealed class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.HasIndex(x => x.Number);
+        builder.Property(x => x.Subtotal)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(x => x.TotalTax)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(x => x.Discount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(32).IsRequired();
+
+        builder.HasIndex(x => new { x.TenantId, x.Number }).IsUnique();
         builder.HasIndex(x => x.CompanyId);
         builder.HasIndex(x => x.CustomerId);
+        builder.HasQueryFilter(x => !x.IsDeleted);
 
         builder.HasMany(x => x.InvoiceItems)
             .WithOne(x => x.Invoice)

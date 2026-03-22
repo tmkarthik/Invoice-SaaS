@@ -8,6 +8,7 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
+        builder.ToTable("Products");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
@@ -22,7 +23,12 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.HasIndex(x => x.Sku);
+        builder.Property(x => x.TaxPercent)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.HasIndex(x => new { x.TenantId, x.Sku }).IsUnique();
         builder.HasIndex(x => x.CompanyId);
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

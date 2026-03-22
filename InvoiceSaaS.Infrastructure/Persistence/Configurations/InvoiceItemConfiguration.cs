@@ -8,6 +8,7 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
 {
     public void Configure(EntityTypeBuilder<InvoiceItem> builder)
     {
+        builder.ToTable("InvoiceItems");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Description)
@@ -15,7 +16,7 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
             .HasMaxLength(500);
 
         builder.Property(x => x.Quantity)
-            .HasPrecision(18, 4)
+            .HasPrecision(18, 2)
             .IsRequired();
 
         builder.Property(x => x.UnitPrice)
@@ -28,5 +29,16 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
 
         builder.HasIndex(x => x.InvoiceId);
         builder.HasIndex(x => x.ProductId);
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.HasOne(x => x.Invoice)
+            .WithMany(x => x.InvoiceItems)
+            .HasForeignKey(x => x.InvoiceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Product)
+            .WithMany()
+            .HasForeignKey(x => x.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

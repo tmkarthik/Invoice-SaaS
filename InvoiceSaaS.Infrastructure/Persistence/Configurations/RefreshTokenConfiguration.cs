@@ -8,6 +8,7 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
 {
     public void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
+        builder.ToTable("RefreshTokens");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Token)
@@ -18,5 +19,6 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
             .IsUnique();
 
         builder.HasIndex(x => x.UserId);
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

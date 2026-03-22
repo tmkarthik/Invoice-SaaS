@@ -2,7 +2,7 @@ using InvoiceSaaS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InvoiceSaaS.Infrastructure.Configurations;
+namespace InvoiceSaaS.Infrastructure.Persistence.Configurations;
 
 public sealed class TemplateConfiguration : IEntityTypeConfiguration<Template>
 {
@@ -17,5 +17,10 @@ public sealed class TemplateConfiguration : IEntityTypeConfiguration<Template>
 
         builder.HasIndex(x => new { x.TenantId, x.Name });
         builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.HasOne(x => x.Company)
+            .WithMany(x => x.Templates)
+            .HasForeignKey(x => x.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
