@@ -31,6 +31,12 @@ public sealed class TenantService(
         return MapToDto(tenant);
     }
 
+    public async Task<IEnumerable<TenantDto>> GetAllTenantsAsync()
+    {
+        var tenants = await tenantRepository.GetAllAsync();
+        return tenants.Select(MapToDto);
+    }
+
     public async Task UpgradeTenantAsync(Guid tenantId, UpgradeTenantRequest request)
     {
         var tenant = await tenantRepository.GetByIdAsync(tenantId);

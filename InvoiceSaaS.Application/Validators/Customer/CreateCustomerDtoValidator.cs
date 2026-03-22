@@ -14,3 +14,13 @@ public class CreateCustomerDtoValidator : AbstractValidator<CreateCustomerDto>
                              .EmailAddress().WithMessage("Invalid email format.");
     }
 }
+
+public class UpdateCustomerDtoValidator : AbstractValidator<UpdateCustomerDto>
+{
+    public UpdateCustomerDtoValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required.");
+        RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.")
+                             .EmailAddress().WithMessage("Invalid email format.");
+    }
+}

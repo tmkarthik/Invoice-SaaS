@@ -72,7 +72,6 @@ public sealed class ProductService(
         {
             throw new UnauthorizedAccessException("Cannot create product for another tenant.");
         }
- Assistant
 
         var product = new Product(dto.TenantId, dto.CompanyId, dto.Name, dto.UnitPrice, dto.Sku, dto.Description, dto.TaxPercent);
         await productRepository.AddAsync(product);

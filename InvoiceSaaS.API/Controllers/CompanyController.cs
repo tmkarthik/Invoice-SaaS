@@ -4,30 +4,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceSaaS.API.Controllers;
 
+[Authorize]
 [ApiController]
-[Route("api/companies")]
+[Route("api/[controller]")]
 public sealed class CompanyController(ICompanyService companyService, ITenantProvider tenantProvider) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<CompanyDto>> CreateCompany(CreateCompanyRequest request)
+    public async Task<IActionResult> CreateCompany(CreateCompanyRequest request)
     {
-        // Step 12: Company creation requires TenantId (it's in CreateCompanyRequest)
         var result = await companyService.CreateCompanyAsync(request);
-        return CreatedAtAction(nameof(GetCompany), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(GetCompany), new { id = result.Id }, ApiResponse.SuccessResponse(result, "Company created successfully."));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CompanyDto>> GetCompany(Guid id)
+    public async Task<IActionResult> GetCompany(Guid id)
     {
         var result = await companyService.GetCompanyAsync(id);
-        return Ok(result);
+        return Ok(ApiResponse.SuccessResponse(result));
     }
 
     [HttpGet("tenant/{tenantId}")]
-    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompaniesByTenant(Guid tenantId)
+    public async Task<IActionResult> GetCompaniesByTenant(Guid tenantId)
     {
-        // Step 12: Add endpoint: GET /api/companies/tenant/{tenantId}
         var results = await companyService.GetCompaniesByTenantAsync(tenantId);
-        return Ok(results);
+        return Ok(ApiResponse.SuccessResponse(results));
     }
 }
