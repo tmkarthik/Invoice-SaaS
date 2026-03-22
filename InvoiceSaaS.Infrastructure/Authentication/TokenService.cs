@@ -35,13 +35,13 @@ public sealed class TokenService(IConfiguration configuration) : ITokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshToken GenerateRefreshToken(Guid userId)
+    public RefreshToken GenerateRefreshToken(Guid tenantId, Guid userId)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         var token = Convert.ToBase64String(randomNumber);
-
-        return new RefreshToken(userId, token, DateTime.UtcNow.AddDays(7));
+ 
+        return new RefreshToken(tenantId, userId, token, DateTime.UtcNow.AddDays(7));
     }
 }

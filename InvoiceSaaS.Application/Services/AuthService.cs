@@ -1,5 +1,6 @@
 using InvoiceSaaS.Application.Interfaces;
 using InvoiceSaaS.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceSaaS.Application.Services;
 
@@ -12,8 +13,11 @@ public sealed class AuthService(
 {
     public async Task<AuthResult> RegisterAsync(Guid tenantId, Guid companyId, string email, string fullName, string password)
     {
-        var users = await userRepository.GetAllAsync();
-        if (users.Any(u => u.Email == email.ToLowerInvariant()))
+        var existingUser = await userRepository.GetQueryable()
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(u => u.Email == email.ToLowerInvariant());
+            
+        if (existingUser != null)
             throw new InvalidOperationException("Email already exists.");
 
         var user = new User(tenantId, companyId, email, fullName);
@@ -27,8 +31,9 @@ public sealed class AuthService(
 
     public async Task<AuthResult> LoginAsync(string email, string password)
     {
-        var users = await userRepository.GetAllAsync();
-        var user = users.FirstOrDefault(u => u.Email == email.ToLowerInvariant());
+        var user = await userRepository.GetQueryable()
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(u => u.Email == email.ToLowerInvariant());
 
         if (user == null || !user.IsActive || !passwordHasher.VerifyPassword(password, user.PasswordHash))
             throw new UnauthorizedAccessException("Invalid credentials.");
@@ -38,8 +43,9 @@ public sealed class AuthService(
 
     public async Task<AuthResult> RefreshTokenAsync(string token)
     {
-        var refreshTokens = await refreshTokenRepository.GetAllAsync();
-        var refreshToken = refreshTokens.FirstOrDefault(rt => rt.Token == token);
+        var refreshToken = await refreshTokenRepository.GetQueryable()
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(rt => rt.Token == token);
 
         if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiryDateUtc <= DateTime.UtcNow)
             throw new UnauthorizedAccessException("Invalid or expired refresh token.");
@@ -57,8 +63,10 @@ public sealed class AuthService(
 
     public async Task LogoutAsync(Guid userId)
     {
-        var refreshTokens = await refreshTokenRepository.GetAllAsync();
-        var activeTokens = refreshTokens.Where(rt => rt.UserId == userId && !rt.IsRevoked);
+        var activeTokens = await refreshTokenRepository.GetQueryable()
+            .IgnoreQueryFilters()
+            .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+            .ToListAsync();
 
         foreach (var rt in activeTokens)
         {
@@ -72,7 +80,7 @@ public sealed class AuthService(
     private async Task<AuthResult> GenerateTokens(User user)
     {
         var accessToken = tokenService.GenerateAccessToken(user);
-        var refreshToken = tokenService.GenerateRefreshToken(user.Id);
+        var refreshToken = tokenService.GenerateRefreshToken(user.TenantId, user.Id);
 
         await refreshTokenRepository.AddAsync(refreshToken);
         await unitOfWork.SaveChangesAsync();

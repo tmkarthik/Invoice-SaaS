@@ -4,11 +4,13 @@ namespace InvoiceSaaS.Domain.Entities;
 
 public sealed class RefreshToken : BaseEntity
 {
-    public RefreshToken(Guid userId, string token, DateTime expiryDateUtc)
+    public RefreshToken(Guid tenantId, Guid userId, string token, DateTime expiryDateUtc)
     {
+        if (tenantId == Guid.Empty) throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
         if (userId == Guid.Empty) throw new ArgumentException("UserId cannot be empty.", nameof(userId));
         if (string.IsNullOrWhiteSpace(token)) throw new ArgumentException("Token is required.", nameof(token));
         
+        SetTenant(tenantId);
         UserId = userId;
         Token = token.Trim();
         ExpiryDateUtc = expiryDateUtc;

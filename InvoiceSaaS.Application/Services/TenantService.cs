@@ -107,11 +107,11 @@ public sealed class TenantService(
     private async Task<AuthResult> GenerateTokens(User user)
     {
         var accessToken = tokenService.GenerateAccessToken(user);
-        var refreshToken = tokenService.GenerateRefreshToken(user.Id);
-
+        var refreshToken = tokenService.GenerateRefreshToken(user.TenantId, user.Id);
+ 
         await refreshTokenRepository.AddAsync(refreshToken);
         await unitOfWork.SaveChangesAsync();
-
+ 
         return new AuthResult(accessToken, refreshToken.Token);
     }
 
