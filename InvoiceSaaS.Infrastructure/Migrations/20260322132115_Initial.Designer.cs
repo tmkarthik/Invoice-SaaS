@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceSaaS.Infrastructure.Migrations
 {
     [DbContext(typeof(InvoiceSaaSDbContext))]
-    [Migration("20260322111156_Initial")]
+    [Migration("20260322132115_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -181,6 +181,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TimeZone")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -192,6 +195,8 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId1");
 
                     b.ToTable("Companies", (string)null);
                 });
@@ -231,12 +236,17 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("TenantId1");
 
                     b.HasIndex("TenantId", "Email")
                         .IsUnique();
@@ -345,6 +355,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("TotalTax")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -357,6 +370,8 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("TenantId1");
 
                     b.HasIndex("TenantId", "Number")
                         .IsUnique();
@@ -398,6 +413,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -412,6 +430,8 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId1");
 
                     b.ToTable("InvoiceItems", (string)null);
                 });
@@ -541,6 +561,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -551,6 +574,8 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("TenantId1");
 
                     b.HasIndex("TenantId", "Sku")
                         .IsUnique();
@@ -591,6 +616,8 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.HasIndex("Token")
                         .IsUnique();
@@ -675,12 +702,17 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("TenantId1");
 
                     b.HasIndex("TenantId", "Name");
 
@@ -785,6 +817,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TenantId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -792,19 +827,43 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("TenantId1");
+
                     b.HasIndex("TenantId", "Email")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Address", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.AuditLog", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Company", b =>
                 {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
                         .WithMany("Companies")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Tenant");
                 });
@@ -817,11 +876,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Company");
 
@@ -840,6 +903,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .WithMany("CustomerAddresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Address");
@@ -861,11 +930,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Company");
 
@@ -888,11 +961,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Invoice");
 
@@ -901,11 +978,26 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceSettings", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("InvoiceSaaS.Domain.Entities.Invoice", null)
                         .WithMany("Payments")
                         .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -918,11 +1010,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Company");
 
@@ -931,6 +1027,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.RefreshToken", b =>
                 {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("InvoiceSaaS.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -938,6 +1040,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Subscription", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Template", b =>
@@ -948,11 +1059,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Company");
 
@@ -967,11 +1082,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
                         .WithMany("Users")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId1");
 
                     b.Navigation("Company");
 

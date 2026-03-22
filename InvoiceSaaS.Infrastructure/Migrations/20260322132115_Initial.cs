@@ -12,91 +12,6 @@ namespace InvoiceSaaS.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AddressLine1 = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    AddressLine2 = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    State = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Landmark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AuditLogs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EntityId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IpAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InvoiceSettings",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Prefix = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CurrentNumber = table.Column<int>(type: "int", nullable: false),
-                    Suffix = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InvoiceSettings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Subscriptions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlanName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    MaxUsers = table.Column<int>(type: "int", nullable: false),
-                    MaxInvoices = table.Column<int>(type: "int", nullable: false),
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tenants",
                 columns: table => new
                 {
@@ -121,6 +36,63 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AddressLine1 = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    AddressLine2 = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    State = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Landmark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EntityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EntityId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IpAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AuditLogs_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -131,6 +103,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Currency = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     TimeZone = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -144,7 +117,64 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Companies_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceSettings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Prefix = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    CurrentNumber = table.Column<int>(type: "int", nullable: false),
+                    Suffix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceSettings_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MaxUsers = table.Column<int>(type: "int", nullable: false),
+                    MaxInvoices = table.Column<int>(type: "int", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +183,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(254)", maxLength: 254, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -176,7 +207,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +221,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Sku = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -209,7 +246,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -218,6 +260,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     TemplateJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false),
@@ -240,7 +283,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Templates_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -249,6 +297,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -273,7 +322,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Users_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -305,6 +359,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerAddresses_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,6 +373,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Number = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IssueDateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -349,7 +410,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -370,6 +436,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_RefreshTokens_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
@@ -382,6 +454,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TenantId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     InvoiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -413,7 +486,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InvoiceItems_Tenants_TenantId1",
+                        column: x => x.TenantId1,
+                        principalTable: "Tenants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -439,6 +517,12 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         name: "FK_Payments_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payments_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -469,6 +553,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Companies_TenantId1",
+                table: "Companies",
+                column: "TenantId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomerAddresses_AddressId",
                 table: "CustomerAddresses",
                 column: "AddressId");
@@ -495,6 +584,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_TenantId1",
+                table: "Customers",
+                column: "TenantId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InvoiceItems_InvoiceId",
                 table: "InvoiceItems",
                 column: "InvoiceId");
@@ -508,6 +602,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 name: "IX_InvoiceItems_TenantId",
                 table: "InvoiceItems",
                 column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceItems_TenantId1",
+                table: "InvoiceItems",
+                column: "TenantId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invoices_CompanyId",
@@ -524,6 +623,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 table: "Invoices",
                 columns: new[] { "TenantId", "Number" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_TenantId1",
+                table: "Invoices",
+                column: "TenantId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvoiceSettings_TenantId",
@@ -553,6 +657,16 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_TenantId1",
+                table: "Products",
+                column: "TenantId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_TenantId",
+                table: "RefreshTokens",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
                 table: "RefreshTokens",
                 column: "Token",
@@ -579,6 +693,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 columns: new[] { "TenantId", "Name" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Templates_TenantId1",
+                table: "Templates",
+                column: "TenantId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tenants_Email",
                 table: "Tenants",
                 column: "Email",
@@ -594,6 +713,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                 table: "Users",
                 columns: new[] { "TenantId", "Email" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_TenantId1",
+                table: "Users",
+                column: "TenantId1");
         }
 
         /// <inheritdoc />

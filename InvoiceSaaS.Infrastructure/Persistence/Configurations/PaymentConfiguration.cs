@@ -30,6 +30,11 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.HasIndex(x => x.InvoiceId);
         builder.HasQueryFilter(x => !x.IsDeleted);
 
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne<Invoice>()
             .WithMany(x => x.Payments)
             .HasForeignKey(x => x.InvoiceId)

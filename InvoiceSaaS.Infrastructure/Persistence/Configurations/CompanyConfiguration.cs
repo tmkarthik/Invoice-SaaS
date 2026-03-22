@@ -36,6 +36,11 @@ public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .HasForeignKey(x => x.CompanyId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasMany(x => x.Templates)
             .WithOne(x => x.Company)
             .HasForeignKey(x => x.CompanyId)

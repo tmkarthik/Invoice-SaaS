@@ -17,7 +17,13 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsActive).IsRequired();
 
         builder.HasIndex(x => new { x.TenantId, x.Email }).IsUnique();
+        builder.HasIndex(x => x.CompanyId);
         builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Company)
             .WithMany(x => x.Users)

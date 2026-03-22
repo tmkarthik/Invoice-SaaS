@@ -40,5 +40,10 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
             .WithMany()
             .HasForeignKey(x => x.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

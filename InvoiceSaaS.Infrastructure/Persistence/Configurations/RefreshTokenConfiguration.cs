@@ -20,5 +20,10 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
 
         builder.HasIndex(x => x.UserId);
         builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

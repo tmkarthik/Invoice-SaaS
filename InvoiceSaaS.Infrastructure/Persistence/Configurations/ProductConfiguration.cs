@@ -30,5 +30,10 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasIndex(x => new { x.TenantId, x.Sku }).IsUnique();
         builder.HasIndex(x => x.CompanyId);
         builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

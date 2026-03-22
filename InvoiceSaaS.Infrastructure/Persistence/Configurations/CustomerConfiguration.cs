@@ -26,6 +26,11 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.HasIndex(x => x.CompanyId);
         builder.HasQueryFilter(x => !x.IsDeleted);
 
+        builder.HasOne<InvoiceSaaS.Domain.Entities.Tenant>()
+            .WithMany()
+            .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasMany(x => x.Invoices)
             .WithOne(x => x.Customer)
             .HasForeignKey(x => x.CustomerId)
