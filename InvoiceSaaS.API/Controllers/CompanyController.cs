@@ -9,7 +9,7 @@ namespace InvoiceSaaS.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public sealed class CompanyController(ICompanyService companyService, ITenantProvider tenantProvider) : ControllerBase
+public sealed class CompanyController(ICompanyService companyService) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateCompany(CreateCompanyRequest request)

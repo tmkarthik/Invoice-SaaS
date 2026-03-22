@@ -8,7 +8,6 @@ public sealed class AuthService(
     IGenericRepository<RefreshToken> refreshTokenRepository,
     IPasswordHasher passwordHasher,
     ITokenService tokenService,
-    ITenantProvider tenantProvider,
     IUnitOfWork unitOfWork) : IAuthService
 {
     public async Task<AuthResult> RegisterAsync(Guid tenantId, Guid companyId, string email, string fullName, string password)

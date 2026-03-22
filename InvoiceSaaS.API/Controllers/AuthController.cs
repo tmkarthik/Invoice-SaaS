@@ -10,6 +10,7 @@ namespace InvoiceSaaS.API.Controllers;
 [Route("api/[controller]")]
 public sealed class AuthController(IAuthService authService) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -17,6 +18,7 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
         return Ok(ApiResponse.SuccessResponse(result, "User registered successfully"));
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -24,6 +26,7 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
         return Ok(ApiResponse.SuccessResponse(result, "Login successful"));
     }
 
+    [AllowAnonymous]
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshRequest request)
     {

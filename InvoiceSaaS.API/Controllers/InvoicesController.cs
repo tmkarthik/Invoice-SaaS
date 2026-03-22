@@ -9,7 +9,7 @@ namespace InvoiceSaaS.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public sealed class InvoicesController(IInvoiceService invoiceService, ITenantProvider tenantProvider) : ControllerBase
+public sealed class InvoicesController(IInvoiceService invoiceService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)

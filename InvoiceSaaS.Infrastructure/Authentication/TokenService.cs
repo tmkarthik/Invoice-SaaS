@@ -21,7 +21,7 @@ public sealed class TokenService(IConfiguration configuration) : ITokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("TenantId", user.CompanyId.ToString()),
+            new Claim("TenantId", user.TenantId.ToString()),
             new Claim(ClaimTypes.Role, user.Role)
         };
 
