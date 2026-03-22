@@ -1,4 +1,5 @@
 using InvoiceSaaS.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +9,15 @@ public sealed class TenantMiddleware(RequestDelegate next, ILogger<TenantMiddlew
 {
     public async Task InvokeAsync(HttpContext context, ITenantProvider tenantProvider)
     {
+        // Skip tenant resolution for anonymous endpoints (e.g. tenant registration, auth)
+        var endpoint = context.GetEndpoint();
+        var allowAnonymous = endpoint?.Metadata.GetMetadata<IAllowAnonymous>() != null;
+        if (allowAnonymous)
+        {
+            await next(context);
+            return;
+        }
+
         // 1. Check JWT Claims
         var tenantClaim = context.User?.FindFirst("TenantId")?.Value;
         if (Guid.TryParse(tenantClaim, out var tenantId) && tenantId != Guid.Empty)
@@ -26,7 +36,7 @@ public sealed class TenantMiddleware(RequestDelegate next, ILogger<TenantMiddlew
             return;
         }
 
-        // 3. Missing Tenant handling
+        // 3. Missing Tenant — block the request
         logger.LogWarning("Tenant ID is missing in both JWT claim and X-Tenant-Id header. Pipeline short-circuited.");
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
         await context.Response.WriteAsync("Tenant ID is missing.");
