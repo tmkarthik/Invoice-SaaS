@@ -23,8 +23,15 @@ public sealed class InvoiceSaaSDbContext(
     public DbSet<InvoiceSettings> InvoiceSettings => Set<InvoiceSettings>();
     public DbSet<Template> Templates => Set<Template>();
 
-    public Guid CurrentTenantId => _tenantProvider.GetTenantId();
-    public bool IsAdmin => _tenantProvider.IsAdmin;
+    public Guid CurrentTenantId => TryGetTenantId() ?? Guid.Empty;
+    public bool IsAdmin 
+    {
+        get
+        {
+            try { return _tenantProvider.IsAdmin; }
+            catch { return false; }
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -64,6 +64,7 @@ public sealed class TenantService(
         {
             // 1. Create Tenant
             var tenant = new Tenant(request.Name, request.Email, request.Phone);
+            tenant.SetTenant(tenant.Id); // For the Tenant entity itself, TenantId matches its Id
             await tenantRepository.AddAsync(tenant);
             await unitOfWork.SaveChangesAsync();
 
