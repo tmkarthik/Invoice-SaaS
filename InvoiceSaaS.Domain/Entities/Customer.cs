@@ -8,17 +8,18 @@ public sealed class Customer : BaseEntity
     private readonly List<Invoice> _invoices = [];
     private readonly List<CustomerAddress> _customerAddresses = [];
 
-    public Customer(Guid tenantId, Guid companyId, string displayName, string email, string? gstNumber = null)
+    public Customer(Guid tenantId, Guid companyId, string name, string email, string? phone = null, string? gstNumber = null)
     {
         if (tenantId == Guid.Empty) throw new ArgumentException("TenantId cannot be empty.", nameof(tenantId));
         if (companyId == Guid.Empty) throw new ArgumentException("CompanyId cannot be empty.", nameof(companyId));
-        if (string.IsNullOrWhiteSpace(displayName)) throw new ArgumentException("Display name is required.", nameof(displayName));
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required.", nameof(name));
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
 
         SetTenant(tenantId);
         CompanyId = companyId;
-        DisplayName = displayName.Trim();
+        Name = name.Trim();
         Email = email.Trim().ToLowerInvariant();
+        Phone = phone?.Trim();
         GstNumber = gstNumber?.Trim();
     }
 
@@ -29,8 +30,9 @@ public sealed class Customer : BaseEntity
     public Guid CompanyId { get; private set; }
     public Company? Company { get; private set; }
     public Tenant? Tenant { get; private set; }
-    public string DisplayName { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
+    public string? Phone { get; private set; }
     public string? GstNumber { get; private set; }
     public IReadOnlyCollection<Invoice> Invoices => _invoices.AsReadOnly();
     public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses.AsReadOnly();
@@ -95,13 +97,14 @@ public sealed class Customer : BaseEntity
         AddAddress(new CustomerAddress(TenantId, Id, address.Id, Enums.AddressType.Shipping, isDefault));
     }
 
-    public void UpdateDetails(string displayName, string email, string? gstNumber)
+    public void UpdateDetails(string name, string email, string? phone, string? gstNumber)
     {
-        if (string.IsNullOrWhiteSpace(displayName)) throw new ArgumentException("Display name is required.", nameof(displayName));
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required.", nameof(name));
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
         
-        DisplayName = displayName.Trim();
+        Name = name.Trim();
         Email = email.Trim().ToLowerInvariant();
+        Phone = phone?.Trim();
         GstNumber = gstNumber?.Trim();
         Touch();
     }

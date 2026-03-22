@@ -15,7 +15,7 @@ public sealed class ProductService(
         var tenantId = tenantProvider.GetTenantId();
         var product = await productRepository.GetByIdAsync(id);
         
-        if (product == null || (product.TenantId != tenantId && !tenantProvider.IsAdmin()))
+        if (product == null || (product.TenantId != tenantId && !tenantProvider.IsAdmin))
             return null;
 
         return MapToDto(product);
@@ -68,7 +68,7 @@ public sealed class ProductService(
         if (company.TenantId != dto.TenantId) throw new InvalidOperationException("Company TenantId mismatch.");
 
         // Prevent cross-tenant creation
-        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Cannot create product for another tenant.");
         }
@@ -86,7 +86,7 @@ public sealed class ProductService(
         var product = await productRepository.GetByIdAsync(id) 
             ?? throw new InvalidOperationException($"Product with ID {id} not found.");
 
-        if (product.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (product.TenantId != tenantId && !tenantProvider.IsAdmin)
             throw new UnauthorizedAccessException("Access denied.");
 
         product.UpdateDetails(dto.Name, dto.UnitPrice, dto.Sku, dto.Description, dto.TaxPercent);
@@ -101,7 +101,7 @@ public sealed class ProductService(
         var product = await productRepository.GetByIdAsync(id) 
             ?? throw new InvalidOperationException($"Product with ID {id} not found.");
 
-        if (product.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (product.TenantId != tenantId && !tenantProvider.IsAdmin)
             throw new UnauthorizedAccessException("Access denied.");
 
         productRepository.Delete(product);

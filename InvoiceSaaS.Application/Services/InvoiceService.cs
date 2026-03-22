@@ -34,7 +34,7 @@ public sealed class InvoiceService(
     {
         var tenantId = tenantProvider.GetTenantId();
         
-        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Cannot create invoice for another tenant.");
         }

@@ -18,7 +18,7 @@ public sealed class CompanyService(
 
         // Step 7: Ensure Company TenantId must match logged tenant
         var currentTenantId = tenantProvider.GetTenantId();
-        if (request.TenantId != currentTenantId && !tenantProvider.IsAdmin())
+        if (request.TenantId != currentTenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Cannot create company for another tenant.");
         }
@@ -26,7 +26,7 @@ public sealed class CompanyService(
         var company = new Company(
             request.TenantId, 
             request.LegalName, 
-            request.GSTNumber ?? "PENDING",
+            request.GstNumber ?? "PENDING",
             request.Email,
             request.Phone,
             request.Currency,
@@ -45,7 +45,7 @@ public sealed class CompanyService(
 
         // Security check
         var currentTenantId = tenantProvider.GetTenantId();
-        if (company.TenantId != currentTenantId && !tenantProvider.IsAdmin())
+        if (company.TenantId != currentTenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Access denied to this company.");
         }
@@ -57,7 +57,7 @@ public sealed class CompanyService(
     {
         // Security check
         var currentTenantId = tenantProvider.GetTenantId();
-        if (tenantId != currentTenantId && !tenantProvider.IsAdmin())
+        if (tenantId != currentTenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Access denied to these companies.");
         }

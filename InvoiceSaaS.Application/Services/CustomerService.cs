@@ -15,7 +15,7 @@ public sealed class CustomerService(
         var tenantId = tenantProvider.GetTenantId();
         var customer = await customerRepository.GetByIdAsync(id);
         
-        if (customer == null || (customer.TenantId != tenantId && !tenantProvider.IsAdmin()))
+        if (customer == null || (customer.TenantId != tenantId && !tenantProvider.IsAdmin))
             return null;
 
         return MapToDto(customer);
@@ -68,7 +68,7 @@ public sealed class CustomerService(
         if (company.TenantId != dto.TenantId) throw new InvalidOperationException("Company TenantId mismatch.");
 
         // Prevent cross-tenant creation
-        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (dto.TenantId != tenantId && !tenantProvider.IsAdmin)
         {
             throw new UnauthorizedAccessException("Cannot create customer for another tenant.");
         }
@@ -87,7 +87,7 @@ public sealed class CustomerService(
         var customer = await customerRepository.GetByIdAsync(id) 
             ?? throw new InvalidOperationException($"Customer with ID {id} not found.");
 
-        if (customer.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (customer.TenantId != tenantId && !tenantProvider.IsAdmin)
             throw new UnauthorizedAccessException("Access denied.");
 
         customer.UpdateDetails(dto.Name, dto.Email, dto.Phone, dto.GstNumber);
@@ -102,7 +102,7 @@ public sealed class CustomerService(
         var customer = await customerRepository.GetByIdAsync(id) 
             ?? throw new InvalidOperationException($"Customer with ID {id} not found.");
 
-        if (customer.TenantId != tenantId && !tenantProvider.IsAdmin())
+        if (customer.TenantId != tenantId && !tenantProvider.IsAdmin)
             throw new UnauthorizedAccessException("Access denied.");
 
         customerRepository.Delete(customer);

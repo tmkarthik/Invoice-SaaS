@@ -14,4 +14,7 @@ public record CreateCompanyRequest(
     Guid TenantId,
     string LegalName,
     string? GstNumber,
-    string Email);
+    string Email,
+    string? Phone,
+    string Currency = "INR",
+    string TimeZone = "Asia/Kolkata");

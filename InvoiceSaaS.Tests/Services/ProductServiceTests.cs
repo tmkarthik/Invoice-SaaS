@@ -9,6 +9,7 @@ namespace InvoiceSaaS.Tests.Services;
 public class ProductServiceTests
 {
     private readonly Mock<IGenericRepository<Product>> _productRepositoryMock;
+    private readonly Mock<IGenericRepository<Company>> _companyRepositoryMock;
     private readonly Mock<ITenantProvider> _tenantProviderMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly ProductService _productService;
@@ -17,12 +18,18 @@ public class ProductServiceTests
     public ProductServiceTests()
     {
         _productRepositoryMock = new Mock<IGenericRepository<Product>>();
+        _companyRepositoryMock = new Mock<IGenericRepository<Company>>();
         _tenantProviderMock = new Mock<ITenantProvider>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        
+
         _tenantProviderMock.Setup(x => x.GetTenantId()).Returns(_tenantId);
-        
-        _productService = new ProductService(_productRepositoryMock.Object, _tenantProviderMock.Object, _unitOfWorkMock.Object);
+        _tenantProviderMock.Setup(x => x.IsAdmin).Returns(false);
+
+        _productService = new ProductService(
+            _productRepositoryMock.Object,
+            _companyRepositoryMock.Object,
+            _tenantProviderMock.Object,
+            _unitOfWorkMock.Object);
     }
 
     [Fact]
@@ -42,7 +49,7 @@ public class ProductServiceTests
         var productId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
         var product = new Product(_tenantId, companyId, "Test Product", 10.5m, "SKU123", "Description", 5m);
-        
+
         _productRepositoryMock.Setup(x => x.GetByIdAsync(productId)).ReturnsAsync(product);
 
         var result = await _productService.GetByIdAsync(productId);
@@ -59,12 +66,14 @@ public class ProductServiceTests
     public async Task CreateAsync_ShouldReturnProductDto()
     {
         var companyId = Guid.NewGuid();
-        var createDto = new CreateProductDto("New Product", 20m, "SKU456", "New Desc", 10m);
+        var company = new Company(_tenantId, "Test Co", "GST", "co@test.com", null, "INR", "Asia/Kolkata");
+        var createDto = new CreateProductDto(_tenantId, companyId, "New Product", 20m, "SKU456", "New Desc", 10m);
 
+        _companyRepositoryMock.Setup(x => x.GetByIdAsync(companyId)).ReturnsAsync(company);
         _productRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Product>())).Returns(Task.CompletedTask);
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync(default)).ReturnsAsync(1);
 
-        var result = await _productService.CreateAsync(companyId, createDto);
+        var result = await _productService.CreateAsync(createDto);
 
         Assert.NotNull(result);
         Assert.Equal("New Product", result.Name);
@@ -108,7 +117,7 @@ public class ProductServiceTests
     public async Task DeleteAsync_ShouldThrowException_WhenProductNotFound()
     {
         var productId = Guid.NewGuid();
-        
+
         _productRepositoryMock.Setup(x => x.GetByIdAsync(productId)).ReturnsAsync((Product?)null);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => _productService.DeleteAsync(productId));
