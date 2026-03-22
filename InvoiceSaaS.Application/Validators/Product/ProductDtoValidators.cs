@@ -7,6 +7,8 @@ public class CreateProductDtoValidator : AbstractValidator<CreateProductDto>
 {
     public CreateProductDtoValidator()
     {
+        RuleFor(x => x.TenantId).NotEmpty().WithMessage("TenantId is required.");
+        RuleFor(x => x.CompanyId).NotEmpty().WithMessage("CompanyId is required.");
         RuleFor(x => x.Name).NotEmpty().WithMessage("Product name is required.");
         RuleFor(x => x.Sku).NotEmpty().WithMessage("SKU is required.");
         RuleFor(x => x.UnitPrice).GreaterThanOrEqualTo(0).WithMessage("Unit price cannot be negative.");

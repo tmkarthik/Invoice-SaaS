@@ -7,7 +7,7 @@ public sealed class Tenant : BaseAuditableEntity
     private readonly List<Company> _companies = [];
     private readonly List<User> _users = [];
 
-    public Tenant(string name, string email, string planName = "Free")
+    public Tenant(string name, string email, string? phone = null, string planName = "Free")
     {
         if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Tenant name is required.", nameof(name));
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
@@ -15,6 +15,7 @@ public sealed class Tenant : BaseAuditableEntity
 
         Name = name.Trim();
         Email = email.Trim().ToLowerInvariant();
+        Phone = phone?.Trim();
         PlanName = planName.Trim();
         IsActive = true;
     }

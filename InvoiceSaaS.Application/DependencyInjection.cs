@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ITemplateService, TemplateService>();
+        services.AddScoped<ITenantService, TenantService>();
+        services.AddScoped<ICompanyService, CompanyService>();
         return services;
     }
 }

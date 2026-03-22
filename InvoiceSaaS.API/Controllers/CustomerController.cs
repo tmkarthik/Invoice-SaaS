@@ -11,12 +11,6 @@ namespace InvoiceSaaS.API.Controllers;
 [Route("api/[controller]")]
 public sealed class CustomerController(ICustomerService customerService, ITenantProvider tenantProvider) : ControllerBase
 {
-    private Guid GetCompanyId()
-    {
-        var tenantClaim = User.FindFirst("TenantId")?.Value;
-        return Guid.TryParse(tenantClaim, out var tenantId) ? tenantId : Guid.Empty;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -33,6 +27,13 @@ public sealed class CustomerController(ICustomerService customerService, ITenant
         return Ok(ApiResponse.SuccessResponse(customers));
     }
 
+    [HttpGet("company/{companyId}")]
+    public async Task<IActionResult> GetByCompany(Guid companyId)
+    {
+        var customers = await customerService.GetByCompanyAsync(companyId);
+        return Ok(ApiResponse.SuccessResponse(customers));
+    }
+
     [HttpGet("paged")]
     public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? search = null)
     {
@@ -43,10 +44,7 @@ public sealed class CustomerController(ICustomerService customerService, ITenant
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCustomerDto dto)
     {
-        var companyId = GetCompanyId();
-        if (companyId == Guid.Empty) return Unauthorized(ApiResponse.Failure("Invalid Tenant."));
-
-        var customer = await customerService.CreateAsync(companyId, dto);
+        var customer = await customerService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = customer.Id }, ApiResponse.SuccessResponse(customer, "Customer created successfully."));
     }
 

@@ -14,18 +14,21 @@ public sealed class InvoicesController(IInvoiceService invoiceService, ITenantPr
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var tenantId = tenantProvider.GetTenantId();
-        var invoices = await invoiceService.GetInvoicesAsync(tenantId, cancellationToken);
+        var invoices = await invoiceService.GetInvoicesAsync(cancellationToken);
+        return Ok(ApiResponse.SuccessResponse(invoices));
+    }
+
+    [HttpGet("company/{companyId}")]
+    public async Task<IActionResult> GetByCompany(Guid companyId, CancellationToken cancellationToken)
+    {
+        var invoices = await invoiceService.GetInvoicesByCompanyAsync(companyId, cancellationToken);
         return Ok(ApiResponse.SuccessResponse(invoices));
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateInvoiceDto dto, CancellationToken cancellationToken)
     {
-        var tenantId = tenantProvider.GetTenantId();
-        if (tenantId == Guid.Empty) return Unauthorized(ApiResponse.Failure("Invalid Tenant."));
-
-        var invoice = await invoiceService.CreateInvoiceAsync(tenantId, dto, cancellationToken);
+        var invoice = await invoiceService.CreateInvoiceAsync(dto, cancellationToken);
         return Created($"/api/invoices/{invoice.Id}", ApiResponse.SuccessResponse(invoice, "Invoice created successfully."));
     }
 }

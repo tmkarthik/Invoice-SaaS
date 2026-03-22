@@ -1,5 +1,5 @@
 namespace InvoiceSaaS.Application.DTOs.Customer;
 
-public record CustomerDto(Guid Id, string DisplayName, string Email, string? GstNumber);
-public record CreateCustomerDto(string DisplayName, string Email, string? GstNumber);
-public record UpdateCustomerDto(string DisplayName, string Email, string? GstNumber);
+public record CustomerDto(Guid Id, Guid TenantId, Guid CompanyId, string Name, string Email, string? Phone, string? GstNumber);
+public record CreateCustomerDto(Guid TenantId, Guid CompanyId, string Name, string Email, string? Phone, string? GstNumber);
+public record UpdateCustomerDto(string Name, string Email, string? Phone, string? GstNumber);

@@ -113,3 +113,4 @@ C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\System.IO.Pipelines
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\System.Text.Encodings.Web.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\System.Text.Json.dll
 C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Karthickkumar Murali\KKS\InvoiceSaaS.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
