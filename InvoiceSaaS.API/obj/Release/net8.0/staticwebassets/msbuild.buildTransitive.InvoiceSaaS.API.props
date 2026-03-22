@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\InvoiceSaaS.API.props" />
-</Project>
