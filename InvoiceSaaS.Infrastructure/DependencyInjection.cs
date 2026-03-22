@@ -27,7 +27,8 @@ public static class DependencyInjection
 
             if (infraOptions.UseInMemoryRepository)
             {
-                options.UseInMemoryDatabase("InvoiceSaaS");
+                options.UseInMemoryDatabase("InvoiceSaaS")
+                       .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.InMemoryEventId.TransactionIgnoredWarning));
                 return;
             }
 
