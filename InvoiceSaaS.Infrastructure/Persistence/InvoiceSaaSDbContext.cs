@@ -12,6 +12,7 @@ public sealed class InvoiceSaaSDbContext(
 {
     private readonly ITenantProvider _tenantProvider = tenantProvider;
 
+    public DbSet<InvoiceSaaS.Domain.Entities.Tenant> Tenants => Set<InvoiceSaaS.Domain.Entities.Tenant>();
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
@@ -19,6 +20,7 @@ public sealed class InvoiceSaaSDbContext(
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
+    public DbSet<InvoiceSettings> InvoiceSettings => Set<InvoiceSettings>();
     public DbSet<Template> Templates => Set<Template>();
 
     public Guid CurrentTenantId => _tenantProvider.GetTenantId();
