@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceSaaS.Infrastructure.Repositories;
 
-public sealed class GenericRepository<T>(InvoiceSaaSDbContext dbContext) : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T>(InvoiceSaaSDbContext dbContext) : IGenericRepository<T> where T : BaseEntity
 {
-    public async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await dbContext.Set<T>().FindAsync(id);
+        return await dbContext.Set<T>().FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await dbContext.Set<T>().ToListAsync();
+        return await dbContext.Set<T>().ToListAsync(cancellationToken);
     }
 
     public IQueryable<T> GetQueryable()
@@ -22,9 +22,9 @@ public sealed class GenericRepository<T>(InvoiceSaaSDbContext dbContext) : IGene
         return dbContext.Set<T>().AsQueryable();
     }
 
-    public async Task AddAsync(T entity)
+    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await dbContext.Set<T>().AddAsync(entity);
+        await dbContext.Set<T>().AddAsync(entity, cancellationToken);
     }
 
     public void Update(T entity)

@@ -17,10 +17,47 @@ namespace InvoiceSaaS.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.25")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.ActivityLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("InvoiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityLogs");
+                });
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Address", b =>
                 {
@@ -207,6 +244,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -235,6 +275,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
                     b.Property<Guid?>("TenantId1")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -307,6 +350,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -359,6 +405,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -403,14 +452,7 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TaxRate")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TenantId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("UnitPrice")
@@ -428,9 +470,59 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.HasIndex("TenantId1");
-
                     b.ToTable("InvoiceItems", (string)null);
+                });
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceItemTax", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("AppliedRate")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("InvoiceItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCompound")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TaxDefinitionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TaxName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceItemId");
+
+                    b.HasIndex("TaxDefinitionId");
+
+                    b.ToTable("InvoiceItemTaxes", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceSettings", b =>
@@ -448,8 +540,21 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<int>("CurrentNumber")
                         .HasColumnType("int");
 
+                    b.Property<string>("DefaultCurrency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DefaultDueDays")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DefaultTaxRate")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prefix")
                         .IsRequired()
@@ -532,6 +637,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -564,6 +672,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -669,6 +780,46 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.ToTable("Subscriptions", (string)null);
                 });
 
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.TaxDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompound")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Rate")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TaxDefinitions", (string)null);
+                });
+
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Template", b =>
                 {
                     b.Property<Guid>("Id")
@@ -677,6 +828,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -701,6 +855,9 @@ namespace InvoiceSaaS.Infrastructure.Migrations
 
                     b.Property<Guid?>("TenantId1")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -964,15 +1121,28 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId1");
-
                     b.Navigation("Invoice");
 
                     b.Navigation("Product");
+                });
 
-                    b.Navigation("Tenant");
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceItemTax", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.InvoiceItem", "InvoiceItem")
+                        .WithMany("Taxes")
+                        .HasForeignKey("InvoiceItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InvoiceSaaS.Domain.Entities.TaxDefinition", "TaxDefinition")
+                        .WithMany()
+                        .HasForeignKey("TaxDefinitionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("InvoiceItem");
+
+                    b.Navigation("TaxDefinition");
                 });
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceSettings", b =>
@@ -1045,6 +1215,15 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.TaxDefinition", b =>
+                {
+                    b.HasOne("InvoiceSaaS.Domain.Entities.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -1124,6 +1303,11 @@ namespace InvoiceSaaS.Infrastructure.Migrations
                     b.Navigation("InvoiceItems");
 
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("InvoiceSaaS.Domain.Entities.InvoiceItem", b =>
+                {
+                    b.Navigation("Taxes");
                 });
 
             modelBuilder.Entity("InvoiceSaaS.Domain.Entities.Tenant", b =>

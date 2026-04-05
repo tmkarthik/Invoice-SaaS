@@ -1,0 +1,154 @@
+@using InvoiceSaaS.Application.DTOs
+@model InvoiceDto
+@{
+    ViewData["Title"] = $"Invoice {Model.InvoiceNumber}";
+}
+
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Invoices</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.InvoiceNumber</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Invoice <span class="text-primary">#@Model.InvoiceNumber</span></h1>
+        <div class="btn-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="fas fa-edit me-1"></i> Edit</a>
+            <a asp-controller="Portal" asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-outline-secondary"><i class="fas fa-file-pdf me-1"></i> Download PDF</a>
+            <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fas fa-print me-1"></i> Print</button>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body p-5">
+            <!-- Header section -->
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Company Info</div>
+                        <h4 class="mb-0">InvoiceCraft Studio</h4>
+                        <div class="text-muted small">San Francisco, CA 94103<br>hello@invoicecraft.io</div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="mb-4">
+                        <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Invoice Status</div>
+                        @switch (Model.Status)
+                        {
+                            case "Paid":
+                                <span class="badge bg-success fs-6">Paid</span>
+                                break;
+                            case "Overdue":
+                                <span class="badge bg-danger fs-6">Overdue</span>
+                                break;
+                            case "Draft":
+                                <span class="badge bg-warning text-dark fs-6">Draft</span>
+                                break;
+                            default:
+                                <span class="badge bg-info text-dark fs-6">@Model.Status</span>
+                                break;
+                        }
+                    </div>
+                    <div class="row g-2 justify-content-md-end">
+                        <div class="col-auto"><span class="text-muted small">Issue Date:</span></div>
+                        <div class="col-auto"><strong>@Model.IssueDate.ToLocalTime().ToString("MMM dd, yyyy")</strong></div>
+                    </div>
+                    <div class="row g-2 justify-content-md-end">
+                        <div class="col-auto"><span class="text-muted small">Due Date:</span></div>
+                        <div class="col-auto"><strong>@Model.DueDate.ToLocalTime().ToString("MMM dd, yyyy")</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5">
+
+            <!-- Bill to section -->
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="text-xs font-weight-bold text-uppercase text-muted mb-1">Bill To</div>
+                    <h5 class="mb-1">@Model.CustomerName</h5>
+                    <div class="text-muted small">@Model.CustomerEmail</div>
+                </div>
+            </div>
+
+            <!-- Items table -->
+            <div class="table-responsive mb-5">
+                <table class="table table-borderless table-striped align-middle">
+                    <thead class="bg-light">
+                        <tr class="text-xs text-uppercase text-muted">
+                            <th class="ps-4">Description</th>
+                            <th class="text-center" style="width: 100px;">Qty</th>
+                            <th class="text-end" style="width: 150px;">Unit Price</th>
+                            <th class="text-end pe-4" style="width: 150px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <div class="fw-bold">@item.Description</div>
+                                    @if (item.Taxes != null && item.Taxes.Any())
+                                    {
+                                        <div class="text-xs text-muted">
+                                            Taxes: @string.Join(", ", item.Taxes.Select(t => $"{t.Name} ({t.Rate}%)"))
+                                        </div>
+                                    }
+                                </td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                                <td class="text-end pe-4 fw-bold">@item.Amount.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totals section -->
+            <div class="row justify-content-end">
+                <div class="col-md-5">
+                    <div class="bg-light p-4 rounded text-end">
+                        <div class="row mb-2">
+                            <div class="col text-muted">Subtotal</div>
+                            <div class="col-auto fw-bold text-end" style="min-width: 120px;">
+                                @((Model.Amount - Model.TaxBreakdown.Sum(t => t.Amount)).ToString("C"))
+                            </div>
+                        </div>
+
+                        @foreach (var tax in Model.TaxBreakdown)
+                        {
+                            <div class="row mb-2">
+                                <div class="col text-muted">@tax.Name (@tax.Rate%)</div>
+                                <div class="col-auto fw-bold text-end">@tax.Amount.ToString("C")</div>
+                            </div>
+                        }
+
+                        <hr class="my-3">
+                        
+                        <div class="row align-items-center">
+                            <div class="col h5 mb-0 font-weight-bold">Total Due (@Model.Currency)</div>
+                            <div class="col-auto h4 mb-0 font-weight-bold text-primary">@Model.Amount.ToString("C")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer notes -->
+            <div class="mt-5 pt-5 text-muted small text-center">
+                <p class="mb-0">Thank you for your business! Payment is due within 30 days. Late payments are subject to a 1.5% monthly interest charge.</p>
+                <p>InvoiceCraft Studio | www.invoicecraft.io</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .breadcrumb, .btn-group, .topbar, .sidebar, .bottombar, .icon-btn { display: none !important; }
+        .card { border: none !important; box-shadow: none !important; }
+        .card-body { padding: 0 !important; }
+        body { background: white !important; }
+    }
+</style>

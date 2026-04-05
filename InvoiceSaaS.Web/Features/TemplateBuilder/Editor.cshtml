@@ -4,6 +4,83 @@
     ViewData["Title"] = "Invoice Template Editor";
 }
 
+<style>
+    /* Custom Multi-select Styles */
+    .tax-picker {
+        position: relative;
+        min-width: 140px;
+    }
+    .tp-trigger {
+        background: #fff;
+        border: 1px solid #E2E8F0;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+        color: #475569;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .tp-trigger:hover { border-color: #6366F1; }
+    .tp-trigger:after {
+        content: "";
+        width: 0; height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #94A3B8;
+        margin-left: 8px;
+    }
+    .tp-dropdown {
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        z-index: 1000;
+        background: white;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        margin-top: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        padding: 5px;
+    }
+    .tp-dropdown.show { display: block; }
+    .tp-opt {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .tp-opt:hover { background: #F8FAFC; }
+    .tp-opt input { margin-right: 8px; cursor: pointer; }
+    .tp-opt span { font-size: 11px; color: #1E293B; }
+    
+    .tax-chip {
+        background: #EEF2FF;
+        color: #4F46E5;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .tax-row {
+        animation: fadeIn 0.3s ease-out;
+    }
+</style>
+
 <!-- SCREEN 1: EDITOR -->
 <div class="screen show" id="s1">
   <div class="topbar">
@@ -524,17 +601,36 @@
         <div style="overflow-x:auto">
           <table class="items-tbl">
             <thead>
-              <tr><th style="width:40%">Description</th><th style="width:12%">Qty</th><th style="width:20%">Unit price</th><th style="width:18%">Amount</th><th style="width:10%"></th></tr>
+              <tr><th style="width:30%">Description</th><th style="width:10%">Qty</th><th style="width:15%">Unit price</th><th style="width:25%">Taxes</th><th style="width:12%">Amount</th><th style="width:8%"></th></tr>
             </thead>
             <tbody id="items-tbody">
               @foreach (var item in Model.LineItems)
               {
-                <tr>
-                  <td><input value="@item.Description" /></td>
-                  <td><input value="@item.Qty" /></td>
-                  <td><input value="$@item.UnitPrice.ToString("N2")" /></td>
-                  <td style="font-weight:600;font-size:12px">$@item.Amount.ToString("N2")</td>
-                  <td><button class="rm-btn" onclick="this.closest('tr').remove()"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="2" x2="9" y2="9"/><line x1="9" y1="2" x2="2" y2="9"/></svg></button></td>
+                <tr class="item-row">
+                  <td><input class="item-desc" value="@item.Description" oninput="calculateTotals()" /></td>
+                  <td><input class="item-qty" type="number" value="@item.Qty" oninput="calculateTotals()" /></td>
+                  <td><input class="item-price" value="@item.UnitPrice.ToString("N2")" oninput="calculateTotals()" /></td>
+                  <td>
+                    <div class="tax-picker">
+                        <div class="tp-trigger" onclick="toggleTP(this)">Select taxes...</div>
+                        <div class="tp-dropdown">
+                            @foreach(var tax in Model.AvailableTaxes)
+                            {
+                                <label class="tp-opt">
+                                    <input type="checkbox" value="@tax.Id" 
+                                           data-name="@tax.Name" 
+                                           data-rate="@tax.Rate" 
+                                           data-compound="@tax.IsCompound.ToString().ToLower()" 
+                                           data-priority="@tax.Priority"
+                                           onchange="onTaxUpdate(this)">
+                                    <span>@tax.Name (@tax.Rate%)</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                  </td>
+                  <td class="item-amount" style="font-weight:600;font-size:12px">$@item.Amount.ToString("N2")</td>
+                  <td><button class="rm-btn" onclick="this.closest('tr').remove(); calculateTotals();"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="2" x2="9" y2="9"/><line x1="9" y1="2" x2="2" y2="9"/></svg></button></td>
                 </tr>
               }
             </tbody>
@@ -546,10 +642,15 @@
         </button>
         <div class="totals-foot">
           <div class="totals-mini">
-            <div class="tm-row"><span>Subtotal</span><span>$@Model.Subtotal.ToString("N2")</span></div>
-            <div class="tm-row"><span>Tax (10%)</span><span>$@Model.Tax.ToString("N2")</span></div>
+            <div class="tm-row"><span>Subtotal</span>$<span data-bind-target="Subtotal">@Model.Subtotal.ToString("N2")</span></div>
+            <div id="taxes-container">
+              @foreach(var tax in Model.TaxBreakdown)
+              {
+                <div class="tm-row tax-row"><span>@tax.Name (@tax.Rate%)</span><span>$@tax.Amount.ToString("N2")</span></div>
+              }
+            </div>
             <div class="tm-row"><span>Discount</span><span>—</span></div>
-            <div class="tm-row grand"><span>Total</span><span>$@Model.Total.ToString("N2")</span></div>
+            <div class="tm-row grand"><span>Total</span>$<span data-bind-target="Total">@Model.Total.ToString("N2")</span></div>
           </div>
         </div>
       </div>
@@ -628,7 +729,12 @@
       <div class="p-tots">
         <div class="p-tots-inner">
           <div class="p-tot-row"><span>Subtotal</span>$<span data-bind-target="Subtotal">@Model.Subtotal.ToString("N2")</span></div>
-          <div class="p-tot-row"><span>Tax (10%)</span>$<span data-bind-target="Tax">@Model.Tax.ToString("N2")</span></div>
+          <div id="p-taxes-container">
+            @foreach(var tax in Model.TaxBreakdown)
+            {
+              <div class="p-tot-row tax-row"><span>@tax.Name (@tax.Rate%)</span><span>$@tax.Amount.ToString("N2")</span></div>
+            }
+          </div>
           <div class="p-tot-row"><span>Discount</span><span>—</span></div>
           <div class="p-tot-row"><span>Total Due</span>$<span data-bind-target="Total">@Model.Total.ToString("N2")</span></div>
         </div>

@@ -5,6 +5,7 @@ public class LineItemViewModel
     public string Description { get; set; } = "";
     public int Qty { get; set; } = 1;
     public decimal UnitPrice { get; set; }
+    public List<Guid> SelectedTaxIds { get; set; } = new();
     public decimal Amount => Qty * UnitPrice;
 }
 
@@ -40,6 +41,13 @@ public class TemplateEditorViewModel
     public string SelectedLayerName { get; set; } = "Logo";
 }
 
+public class TaxBreakdownViewModel
+{
+    public string Name { get; set; } = "";
+    public decimal Rate { get; set; }
+    public decimal Amount { get; set; }
+}
+
 public class TemplateDataViewModel
 {
     public CompanyInfoViewModel Company { get; set; } = new();
@@ -51,8 +59,11 @@ public class TemplateDataViewModel
         new() { Description = "Website Design", Qty = 1, UnitPrice = 4800 },
         new() { Description = "UI Component Library", Qty = 1, UnitPrice = 1800 },
     };
+    public List<InvoiceSaaS.Application.DTOs.TaxDto> AvailableTaxes { get; set; } = new();
+    public List<TaxBreakdownViewModel> TaxBreakdown { get; set; } = new();
+    
     public decimal Subtotal => LineItems.Sum(i => i.Amount);
-    public decimal Tax => Subtotal * 0.10m;
+    public decimal Tax => TaxBreakdown.Sum(x => x.Amount);
     public decimal Discount => 0m;
     public decimal Total => Subtotal + Tax - Discount;
 }

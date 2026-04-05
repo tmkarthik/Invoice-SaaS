@@ -2,7 +2,7 @@ using InvoiceSaaS.Domain.Common;
 
 namespace InvoiceSaaS.Domain.Entities;
 
-public sealed class Product : BaseEntity
+public sealed class Product : BaseAuditableEntity
 {
     public Product(Guid tenantId, Guid companyId, string name, decimal unitPrice, string sku, string? description = null, decimal taxPercent = 0m)
     {

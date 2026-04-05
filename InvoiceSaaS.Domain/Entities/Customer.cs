@@ -3,7 +3,7 @@ using InvoiceSaaS.Domain.Enums;
 
 namespace InvoiceSaaS.Domain.Entities;
 
-public sealed class Customer : BaseEntity
+public sealed class Customer : BaseAuditableEntity
 {
     private readonly List<Invoice> _invoices = [];
     private readonly List<CustomerAddress> _customerAddresses = [];

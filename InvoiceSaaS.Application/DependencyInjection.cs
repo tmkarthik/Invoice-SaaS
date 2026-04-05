@@ -18,6 +18,9 @@ public static class DependencyInjection
         services.AddScoped<ITemplateService, TemplateService>();
         services.AddScoped<ITenantService, TenantService>();
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<ISettingsService, SettingsService>();
+        services.AddScoped<ITaxService, TaxService>();
         return services;
     }
 }

@@ -22,6 +22,23 @@ public sealed class InvoiceSettings : BaseEntity
     public int CurrentNumber { get; private set; }
     public string? Suffix { get; private set; }
 
+    public string DefaultCurrency { get; private set; } = "USD";
+    public decimal DefaultTaxRate { get; private set; } = 0;
+    public int DefaultDueDays { get; private set; } = 30;
+    public string? LogoUrl { get; private set; }
+
+    public void Update(string prefix, string? suffix, int nextNumber, string currency, decimal taxRate, int dueDays, string? logoUrl)
+    {
+        Prefix = prefix?.Trim() ?? string.Empty;
+        Suffix = suffix?.Trim();
+        CurrentNumber = nextNumber - 1; // GenerateNext increments this
+        DefaultCurrency = currency?.Trim().ToUpper() ?? "USD";
+        DefaultTaxRate = taxRate;
+        DefaultDueDays = dueDays;
+        LogoUrl = logoUrl?.Trim();
+        Touch();
+    }
+
     public string GenerateNextInvoiceNumber()
     {
         CurrentNumber++;

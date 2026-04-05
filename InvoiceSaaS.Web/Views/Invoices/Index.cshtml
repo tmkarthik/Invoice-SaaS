@@ -1,14 +1,156 @@
+@using InvoiceSaaS.Application.DTOs
+@model IEnumerable<InvoiceDto>
 @{
     ViewData["Title"] = "Invoices";
 }
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="px-6 py-5 border-b border-gray-200">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">Invoices List</h3>
-        <p class="mt-1 text-sm text-gray-500">API integration for this view is pending.</p>
+<div class="container-fluid py-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Invoices</h1>
+        <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50 me-1"></i> Create New Invoice
+        </a>
     </div>
-    <div class="p-6">
-        <div class="text-center py-10 text-gray-500">No Invoices Found. Start creating one below.</div>
-        <a href="/TemplateBuilder/Editor" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">Go to Invoice Builder</a>
-    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="BulkAction" method="post" id="bulkActionForm">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Invoice List</h6>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="bulkActionsDrop" data-bs-toggle="dropdown" aria-expanded="false">
+                        Bulk Actions
+                    </button>
+                    <ul class="dropdown-menu shadow animated--fade-in" aria-labelledby="bulkActionsDrop">
+                        <li><button type="submit" name="action" value="MarkAsPaid" class="dropdown-item">Mark as Paid</button></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button type="submit" name="action" value="Delete" class="dropdown-item text-danger">Delete Selected</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="selectAll" class="form-check-input" />
+                                    </th>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var invoice in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selectedIds" value="@invoice.Id" class="form-check-input select-item" />
+                                        </td>
+                                        <td><strong>@invoice.InvoiceNumber</strong></td>
+                                        <td>
+                                            <div>@invoice.CustomerName</div>
+                                            <small class="text-muted">@invoice.CustomerEmail</small>
+                                        </td>
+                                        <td>
+                                            @invoice.Amount.ToString("C") @invoice.Currency
+                                            @if (invoice.TaxBreakdown != null && invoice.TaxBreakdown.Any())
+                                            {
+                                                var hoverContent = string.Join("<br/>", invoice.TaxBreakdown.Select(t => $"{t.Name} ({t.Rate}%): {t.Amount:C}"));
+                                                <i class="fas fa-info-circle text-info ms-1" 
+                                                   style="cursor:help" 
+                                                   data-bs-toggle="popover" 
+                                                   data-bs-trigger="hover" 
+                                                   data-bs-html="true" 
+                                                   title="Tax Breakdown" 
+                                                   data-bs-content="@hoverContent"></i>
+                                            }
+                                        </td>
+                                        <td>
+                                            @switch (invoice.Status)
+                                            {
+                                                case "Paid":
+                                                    <span class="badge bg-success">Paid</span>
+                                                    break;
+                                                case "Overdue":
+                                                    <span class="badge bg-danger">Overdue</span>
+                                                    break;
+                                                case "Draft":
+                                                    <span class="badge bg-warning text-dark">Draft</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-info text-dark">@invoice.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@invoice.DueDate.ToLocalTime().ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a asp-action="Edit" asp-route-id="@invoice.Id" class="btn btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                                <a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+                                                <a asp-controller="Portal" asp-action="DownloadPdf" asp-route-id="@invoice.Id" class="btn btn-outline-secondary" title="PDF"><i class="fas fa-file-pdf"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-invoice fa-3x text-gray-300 mb-3"></i>
+                        <p class="text-muted">No invoices found. Generate your first invoice using the builder!</p>
+                        <a href="/TemplateBuilder/Editor" class="btn btn-primary">Open Invoice Builder</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.select-item');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        const items = document.querySelectorAll('.select-item');
+        items.forEach(item => {
+            item.addEventListener('change', function() {
+                if (!this.checked) {
+                    document.getElementById('selectAll').checked = false;
+                } else if (Array.from(items).every(i => i.checked)) {
+                    document.getElementById('selectAll').checked = true;
+                }
+            });
+        // Initialize Popovers
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+    </script>
+}

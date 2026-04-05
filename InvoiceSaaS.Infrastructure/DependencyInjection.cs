@@ -3,6 +3,8 @@ using InvoiceSaaS.Infrastructure.Authentication;
 using InvoiceSaaS.Infrastructure.Configurations;
 using InvoiceSaaS.Infrastructure.Persistence;
 using InvoiceSaaS.Infrastructure.Repositories;
+using InvoiceSaaS.Infrastructure.Payments;
+using InvoiceSaaS.Infrastructure.Services;
 using InvoiceSaaS.Infrastructure.Tenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +19,12 @@ public static class DependencyInjection
     {
         services.Configure<InfrastructureOptions>(configuration.GetSection(InfrastructureOptions.SectionName));
         services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
         services.AddScoped<ITenantProvider, TenantProvider>();
+        services.AddScoped<IPaymentService, StripeService>();
+        services.AddScoped<IPdfService, PuppeteerPdfService>();
+        services.AddSingleton<IEmailService, MockEmailService>();
+        services.AddHostedService<PaymentReminderWorker>();
         services.AddDbContext<InvoiceSaaSDbContext>((serviceProvider, options) =>
         {
             var infraOptions = serviceProvider.GetRequiredService<IOptions<InfrastructureOptions>>().Value;
@@ -43,10 +50,11 @@ public static class DependencyInjection
         services.AddScoped<IInvoiceRepository>(serviceProvider =>
         {
             var infraOptions = serviceProvider.GetRequiredService<IOptions<InfrastructureOptions>>().Value;
-            return infraOptions.UseInMemoryRepository
-                ? new InMemoryInvoiceRepository()
-                : new EfInvoiceRepository(serviceProvider.GetRequiredService<InvoiceSaaSDbContext>());
+            if (infraOptions.UseInMemoryRepository) return new InMemoryInvoiceRepository();
+            return new EfInvoiceRepository(serviceProvider.GetRequiredService<InvoiceSaaSDbContext>());
         });
+
+        services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();

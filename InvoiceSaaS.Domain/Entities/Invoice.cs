@@ -3,7 +3,7 @@ using InvoiceSaaS.Domain.Enums;
 
 namespace InvoiceSaaS.Domain.Entities;
 
-public sealed class Invoice : BaseEntity
+public sealed class Invoice : BaseAuditableEntity
 {
     private readonly List<InvoiceItem> _invoiceItems = [];
 
@@ -88,7 +88,7 @@ public sealed class Invoice : BaseEntity
     private void RecalculateAmount()
     {
         Subtotal = _invoiceItems.Sum(x => x.Quantity * x.UnitPrice);
-        TotalTax = _invoiceItems.Sum(x => x.Quantity * x.UnitPrice * x.TaxRate);
+        TotalTax = _invoiceItems.Sum(x => x.GetLineTotal() - (x.Quantity * x.UnitPrice));
         
         var calculatedTotal = Subtotal + TotalTax - Discount;
         Amount = calculatedTotal < 0 ? 0 : calculatedTotal;

@@ -2,7 +2,7 @@ using InvoiceSaaS.Domain.Common;
 
 namespace InvoiceSaaS.Domain.Entities;
 
-public sealed class Template : BaseEntity
+public sealed class Template : BaseAuditableEntity
 {
     public Template(Guid tenantId, Guid companyId, string name, string templateJson, bool isDefault = false)
     {

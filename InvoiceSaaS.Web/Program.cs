@@ -7,12 +7,19 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
-    .WriteTo.Console()
     .CreateLogger();
 
 builder.Host.UseSerilog();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options => {
+        // {0} - Action, {1} - Controller, {2} - Area
+        options.ViewLocationFormats.Clear();
+        options.ViewLocationFormats.Add("/Features/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Features/Shared/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Views/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+    });
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 

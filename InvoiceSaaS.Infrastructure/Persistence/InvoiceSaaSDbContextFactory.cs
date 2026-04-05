@@ -26,6 +26,6 @@ public class InvoiceSaaSDbContextFactory : IDesignTimeDbContextFactory<InvoiceSa
 
         optionsBuilder.UseSqlServer(connectionString);
 
-        return new InvoiceSaaSDbContext(optionsBuilder.Options, null!); // ITenantProvider is null at design time
+        return new InvoiceSaaSDbContext(optionsBuilder.Options, null!, null!); // ITenantProvider and IUserContext are null at design time
     }
 }

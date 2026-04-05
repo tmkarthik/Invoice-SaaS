@@ -8,9 +8,11 @@ namespace InvoiceSaaS.Infrastructure.Persistence;
 
 public sealed class InvoiceSaaSDbContext(
     DbContextOptions<InvoiceSaaSDbContext> options,
-    ITenantProvider tenantProvider) : DbContext(options)
+    ITenantProvider tenantProvider,
+    IUserContext userContext) : DbContext(options)
 {
     private readonly ITenantProvider _tenantProvider = tenantProvider;
+    private readonly IUserContext _userContext = userContext;
 
     public DbSet<InvoiceSaaS.Domain.Entities.Tenant> Tenants => Set<InvoiceSaaS.Domain.Entities.Tenant>();
     public DbSet<Company> Companies => Set<Company>();
@@ -22,6 +24,9 @@ public sealed class InvoiceSaaSDbContext(
     public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
     public DbSet<InvoiceSettings> InvoiceSettings => Set<InvoiceSettings>();
     public DbSet<Template> Templates => Set<Template>();
+    public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
+    public DbSet<TaxDefinition> TaxDefinitions => Set<TaxDefinition>();
+    public DbSet<InvoiceItemTax> InvoiceItemTaxes => Set<InvoiceItemTax>();
 
     public Guid CurrentTenantId => TryGetTenantId() ?? Guid.Empty;
     public bool IsAdmin 
@@ -56,6 +61,7 @@ public sealed class InvoiceSaaSDbContext(
     {
         // Try to get the tenant ID from context — may be null for anonymous flows (e.g. tenant registration)
         var tenantId = TryGetTenantId();
+        var currentUser = _userContext.UserName ?? "system";
 
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
@@ -70,15 +76,28 @@ public sealed class InvoiceSaaSDbContext(
                     }
                     entry.Property(x => x.CreatedDate).CurrentValue = DateTime.UtcNow;
                     entry.Property(x => x.UpdatedDate).CurrentValue = DateTime.UtcNow;
+
+                    if (entry.Entity is BaseAuditableEntity auditableAdd)
+                    {
+                        auditableAdd.MarkCreated(currentUser);
+                    }
                     break;
 
                 case EntityState.Modified:
                     entry.Property(x => x.UpdatedDate).CurrentValue = DateTime.UtcNow;
+                    if (entry.Entity is BaseAuditableEntity auditableMod)
+                    {
+                        auditableMod.MarkUpdated(currentUser);
+                    }
                     break;
 
                 case EntityState.Deleted:
                     entry.State = EntityState.Modified;
                     entry.Entity.SoftDelete();
+                    if (entry.Entity is BaseAuditableEntity auditableDel)
+                    {
+                        auditableDel.MarkUpdated(currentUser);
+                    }
                     break;
             }
         }

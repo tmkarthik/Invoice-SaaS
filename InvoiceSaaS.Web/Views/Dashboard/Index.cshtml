@@ -1,0 +1,163 @@
+@using InvoiceSaaS.Application.DTOs
+@model DashboardDto
+@{
+    ViewData["Title"] = "Business Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0 text-gray-800">Business Dashboard</h1>
+            <p class="text-muted">Real-time overview of your financial health.</p>
+        </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Revenue (Paid)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalRevenue.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Unpaid Amount</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UnpaidAmount.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Overdue Amount</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OverdueAmount.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active Invoices
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@Model.ActiveInvoicesCount</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Activity -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentActivities.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Details</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.RecentActivities)
+                                    {
+                                        <tr>
+                                            <td><span class="badge bg-secondary">@activity.Action</span></td>
+                                            <td>@activity.Details</td>
+                                            <td>@activity.Timestamp.ToLocalTime().ToString("g")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted py-4">No recent activity found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links / Actions -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Invoices" asp-action="Create" class="btn btn-primary btn-block">
+                            <i class="fas fa-plus me-2"></i> Create New Invoice
+                        </a>
+                        <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary btn-block">
+                            <i class="fas fa-user-plus me-2"></i> Add New Customer
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-secondary btn-block">
+                            <i class="fas fa-chart-line me-2"></i> View Full Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-left-primary { border-left: .25rem solid #4e73df!important; }
+    .border-left-success { border-left: .25rem solid #1cc88a!important; }
+    .border-left-info { border-left: .25rem solid #36b9cc!important; }
+    .border-left-warning { border-left: .25rem solid #f6c23e!important; }
+    .card-body { padding: 1.25rem; }
+    .text-xs { font-size: .7rem; }
+    .text-gray-300 { color: #dddfeb!important; }
+    .text-gray-800 { color: #5a5c69!important; }
+</style>

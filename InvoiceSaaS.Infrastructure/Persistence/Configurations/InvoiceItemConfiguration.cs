@@ -19,13 +19,7 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.Property(x => x.UnitPrice)
-            .HasPrecision(18, 2)
-            .IsRequired();
-
-        builder.Property(x => x.TaxRate)
-            .HasPrecision(18, 4)
-            .IsRequired();
+        builder.Property(x => x.UnitPrice).HasPrecision(18, 2).IsRequired();
 
         builder.HasIndex(x => x.InvoiceId);
         builder.HasIndex(x => x.ProductId);
@@ -45,5 +39,14 @@ public sealed class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceI
             .WithMany()
             .HasForeignKey(x => x.TenantId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(x => x.Taxes)
+            .WithOne(x => x.InvoiceItem)
+            .HasForeignKey(x => x.InvoiceItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Taxes)
+            .HasField("_taxes")
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
