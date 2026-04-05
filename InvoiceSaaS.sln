@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvoiceSaaS.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvoiceSaaS.Tests", "InvoiceSaaS.Tests\InvoiceSaaS.Tests.csproj", "{0CC36E7F-8F21-4AA6-B542-E6D35171DB38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvoiceSaaS.Web", "InvoiceSaaS.Web\InvoiceSaaS.Web.csproj", "{D2F87195-7D8F-4C10-A1CA-A3C9E0C23225}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{0CC36E7F-8F21-4AA6-B542-E6D35171DB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CC36E7F-8F21-4AA6-B542-E6D35171DB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CC36E7F-8F21-4AA6-B542-E6D35171DB38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2F87195-7D8F-4C10-A1CA-A3C9E0C23225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2F87195-7D8F-4C10-A1CA-A3C9E0C23225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2F87195-7D8F-4C10-A1CA-A3C9E0C23225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2F87195-7D8F-4C10-A1CA-A3C9E0C23225}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

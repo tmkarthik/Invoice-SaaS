@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - InvoiceCraft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @RenderBody()
+
+    <!-- NAV PILL -->
+    <div id="nav">
+        <button onclick="go(1)" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "TemplateBuilder" && ViewContext.RouteData.Values["action"]?.ToString() == "Editor" ? "active" : "")">① Editor</button>
+        <button onclick="go(2)" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "TemplateBuilder" && ViewContext.RouteData.Values["action"]?.ToString() == "Data" ? "active" : "")">② Data</button>
+        <button onclick="go(3)" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "TemplateBuilder" && ViewContext.RouteData.Values["action"]?.ToString() == "Preview" ? "active" : "")">③ Preview</button>
+        <button onclick="go(4)" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "TemplateBuilder" && ViewContext.RouteData.Values["action"]?.ToString() == "History" ? "active" : "")">④ History</button>
+        <button onclick="go(5)" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Templates" ? "active" : "")">⑤ Templates</button>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

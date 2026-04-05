@@ -1,0 +1,59 @@
+@model InvoiceSaaS.Web.Models.TemplateListViewModel
+@{ ViewData["Title"] = "Invoice Templates"; }
+
+<!-- SCREEN 5: TEMPLATES PAGE -->
+<div class="screen show" id="s5">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="logomark"><svg viewBox="0 0 16 16"><path d="M3 3h4v4H3zm6 0h4v4h-4zM3 9h4v4H3zm6 0h4v4h-4z"/></svg></div>
+      <span class="brand">InvoiceCraft</span>
+    </div>
+    <div class="tb-right">
+      <button class="btn" onclick="go(1)">Open Editor</button>
+      <button class="btn btn-primary">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><line x1="6" y1="2" x2="6" y2="10"/><line x1="2" y1="6" x2="10" y2="6"/></svg>
+        New Template
+      </button>
+    </div>
+  </div>
+  <div class="tpg-body">
+    <div class="tpg-header">
+      <div>
+        <div class="tpg-title">Invoice Templates</div>
+        <div class="tpg-sub">Choose a starting point or build from scratch</div>
+      </div>
+    </div>
+    <div class="tpg-grid">
+      @foreach (var t in Model.Templates)
+      {
+          <div class="tpg-card">
+            <div class="tpg-thumb">
+              <div class="tl a"></div><div class="tl s"></div>
+              <div class="tl-block"></div>
+              <div class="tl m" style="margin-top:6px"></div><div class="tl" style="width:60%"></div><div class="tl" style="width:45%"></div>
+              <div class="tl-block" style="height:28px;margin-top:8px"></div>
+              <div class="tpg-hover">
+                <button class="tpg-hbtn p" onclick="go(1)">Use Template</button>
+                <button class="tpg-hbtn" onclick="go(3)">Preview</button>
+                <button class="tpg-hbtn">Duplicate</button>
+                <button class="tpg-hbtn" style="color:#EF4444">Delete</button>
+              </div>
+            </div>
+            <div class="tpg-info">
+              <div><div class="tpg-name">@t.Name</div><div class="tpg-meta">@t.MetaLabel</div></div>
+              <span class="tpg-menu">···</span>
+            </div>
+          </div>
+      }
+      
+      <!-- Blank Template -->
+      <div class="tpg-card tpg-blank" onclick="go(1)">
+        <div class="blank-inner">
+          <div class="blank-plus">+</div>
+          <div class="blank-txt">Blank template</div>
+          <div class="blank-sub">Start from scratch</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

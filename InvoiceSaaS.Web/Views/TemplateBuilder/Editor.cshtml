@@ -1,0 +1,709 @@
+@model InvoiceSaaS.Web.Models.TemplateDataViewModel
+@{
+    var templateName = "Professional Invoice v2";
+    ViewData["Title"] = "Invoice Template Editor";
+}
+
+<!-- SCREEN 1: EDITOR -->
+<div class="screen show" id="s1">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="logomark">
+        <svg viewBox="0 0 16 16"><path d="M3 3h4v4H3zm6 0h4v4h-4zM3 9h4v4H3zm6 0h4v4h-4z"/></svg>
+      </div>
+      <span class="brand">InvoiceCraft</span>
+      <div class="divider"></div>
+      <input class="tpl-name" value="@templateName" id="tpl-name-inp" />
+    </div>
+    <div class="tb-center">
+      <button class="icon-btn" title="Undo">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 5.5H8a3.5 3.5 0 010 7H5.5"/><path d="M2.5 5.5L5 3M2.5 5.5L5 8"/></svg>
+      </button>
+      <button class="icon-btn" title="Redo">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11.5 5.5H6a3.5 3.5 0 000 7H8.5"/><path d="M11.5 5.5L9 3M11.5 5.5L9 8"/></svg>
+      </button>
+      <div class="divider"></div>
+      <select class="zoom-sel"><option>50%</option><option>75%</option><option selected>100%</option><option>125%</option><option>150%</option></select>
+      <div class="divider"></div>
+      <button class="icon-btn on" id="grid-btn" onclick="toggleGrid()" title="Grid">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="1" width="5" height="5" rx="0.5"/><rect x="8" y="1" width="5" height="5" rx="0.5"/><rect x="1" y="8" width="5" height="5" rx="0.5"/><rect x="8" y="8" width="5" height="5" rx="0.5"/></svg>
+      </button>
+      <button class="icon-btn" title="Snap to grid">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="4"/><line x1="7" y1="10" x2="7" y2="13"/><line x1="1" y1="7" x2="4" y2="7"/><line x1="10" y1="7" x2="13" y2="7"/></svg>
+      </button>
+    </div>
+    <div class="tb-right">
+      <div class="mode-group">
+        <button class="mode-btn on" onclick="go(1)">Design</button>
+        <button class="mode-btn" onclick="go(2)">Data</button>
+        <button class="mode-btn" onclick="go(3)">Preview</button>
+      </div>
+      <div class="divider"></div>
+      <button class="btn" onclick="go(4)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" width="12" height="12"><circle cx="6" cy="6" r="5"/><polyline points="6,3 6,6.5 8,7.5"/></svg>
+        History
+      </button>
+      <button class="btn">Duplicate</button>
+      <button class="btn">Reset</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><path d="M6 1v7"/><path d="M3 6l3 3 3-3"/><path d="M1.5 10.5h9"/></svg>
+        Save Template
+      </button>
+    </div>
+  </div>
+
+  <div class="editor-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-tabs">
+        <div class="sb-tab on" onclick="sbTab(this,'t1')">Templates</div>
+        <div class="sb-tab" onclick="sbTab(this,'t2')">Components</div>
+        <div class="sb-tab" onclick="sbTab(this,'t3')">Layers</div>
+        <div class="sb-tab" onclick="sbTab(this,'t4')">Data</div>
+      </div>
+
+      <!-- Tab: Templates -->
+      <div class="sb-panel" id="t1">
+        <div class="sb-sec">
+          <div class="sb-label">My templates</div>
+          <div class="tpl-grid">
+            <div class="tpl-card sel">
+              <div class="tpl-thumb">
+                <div class="tl a"></div><div class="tl s"></div><div class="tl-block"></div>
+                <div class="tl m" style="margin-top:5px"></div><div class="tl" style="width:50%"></div>
+                <span class="tl-badge">Default</span>
+                <div class="tpl-hover">
+                  <button class="tpl-hbtn p">Select</button><button class="tpl-hbtn">Preview</button>
+                  <button class="tpl-hbtn">Duplicate</button><button class="tpl-hbtn" style="color:#EF4444">Delete</button>
+                </div>
+              </div>
+              <div class="tpl-name-bar">Professional</div>
+            </div>
+            <div class="tpl-card">
+              <div class="tpl-thumb" style="background:#F0FDF4">
+                <div class="tl" style="background:#16A34A;width:42%"></div><div class="tl s"></div>
+                <div class="tl-block" style="background:#BBF7D0"></div>
+                <div class="tl m" style="margin-top:5px"></div>
+                <div class="tpl-hover"><button class="tpl-hbtn p">Select</button><button class="tpl-hbtn">Preview</button></div>
+              </div>
+              <div class="tpl-name-bar">Minimal Green</div>
+            </div>
+            <div class="tpl-card">
+              <div class="tpl-thumb" style="background:#0F172A">
+                <div class="tl" style="background:#818CF8;width:38%"></div>
+                <div class="tl" style="background:rgba(255,255,255,0.18);width:55%"></div>
+                <div class="tl-block" style="background:rgba(99,102,241,0.25)"></div>
+                <div class="tpl-hover"><button class="tpl-hbtn p">Select</button><button class="tpl-hbtn">Preview</button></div>
+              </div>
+              <div class="tpl-name-bar">Dark Mode</div>
+            </div>
+            <div class="tpl-card">
+              <div class="tpl-thumb" style="background:#FFF7ED">
+                <div class="tl" style="background:#EA580C;width:44%"></div><div class="tl s"></div>
+                <div class="tl-block" style="background:#FED7AA"></div>
+                <div class="tpl-hover"><button class="tpl-hbtn p">Select</button><button class="tpl-hbtn">Preview</button></div>
+              </div>
+              <div class="tpl-name-bar">Warm Amber</div>
+            </div>
+          </div>
+        </div>
+        <div class="sb-footer">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;gap:5px">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><line x1="6" y1="2" x2="6" y2="10"/><line x1="2" y1="6" x2="10" y2="6"/></svg>
+            Create Template
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Components -->
+      <div class="sb-panel" id="t2" style="display:none">
+        <div class="sb-sec">
+          <div class="sb-label">Drag to canvas</div>
+          <div class="comp-list">
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><rect x="1" y="3" width="11" height="7" rx="1"/><path d="M4 6h5"/></svg></div><div class="comp-txt"><div class="comp-title">Logo</div><div class="comp-sub">Image block</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><rect x="1" y="1" width="11" height="11" rx="1.5"/><path d="M4 4h5M4 7h3"/></svg></div><div class="comp-txt"><div class="comp-title">Company Info</div><div class="comp-sub">Name, address</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><circle cx="6.5" cy="4.5" r="2.5"/><path d="M1.5 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></div><div class="comp-txt"><div class="comp-title">Customer Info</div><div class="comp-sub">Bill-to details</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><path d="M2 1h9v11H2z"/><path d="M4 4h5M4 7h3"/></svg></div><div class="comp-txt"><div class="comp-title">Invoice Info</div><div class="comp-sub">Number, dates</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><rect x="1" y="2" width="11" height="9" rx="1"/><line x1="1" y1="5" x2="12" y2="5"/><line x1="4" y1="5" x2="4" y2="11"/></svg></div><div class="comp-txt"><div class="comp-title">Line Items Table</div><div class="comp-sub">Products &amp; services</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><path d="M2 10h9M6.5 2v8"/><circle cx="6.5" cy="2" r="1"/></svg></div><div class="comp-txt"><div class="comp-title">Totals</div><div class="comp-sub">Subtotal, tax, total</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><rect x="1" y="2" width="11" height="9" rx="1"/><path d="M4 5.5h5M4 7.5h3"/></svg></div><div class="comp-txt"><div class="comp-title">Bank Details</div><div class="comp-sub">Payment info</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><path d="M2 2h9v9H2z"/><path d="M4 5h5M4 7h3M4 9h1"/></svg></div><div class="comp-txt"><div class="comp-title">Notes</div><div class="comp-sub">Custom message</div></div><span class="drag-dots">⠿</span></div>
+            <div class="comp-row" draggable="true"><div class="comp-ico"><svg viewBox="0 0 13 13" fill="none" stroke="#6B7280" stroke-width="1.4"><path d="M6.5 1L8 4.5l3.5.5-2.5 2.5.5 3.5L6.5 9l-3 2 .5-3.5L1.5 5l3.5-.5z"/></svg></div><div class="comp-txt"><div class="comp-title">Terms</div><div class="comp-sub">Conditions</div></div><span class="drag-dots">⠿</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Layers -->
+      <div class="sb-panel" id="t3" style="display:none">
+        <div class="sb-sec">
+          <div class="layer-list">
+            <div class="layer-row" style="font-weight:600">
+              <span class="l-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="9" height="9" rx="1"/></svg></span>
+              <span class="l-name">Page 1</span>
+              <div class="l-btns"><button class="l-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5s1.5-3 4-3 4 3 4 3-1.5 3-4 3-4-3-4-3z"/><circle cx="5" cy="5" r="1.5"/></svg></button></div>
+            </div>
+            @foreach (var layer in new[]{"Logo","Company Info","Invoice Info","Customer Info","Line Items","Totals","Bank Details","Notes"})
+            {
+              <div class="layer-row layer-indent @(layer == "Logo" ? "sel" : "")">
+                <span class="l-ico"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="9" height="9" rx="1"/></svg></span>
+                <span class="l-name">@layer</span>
+                <div class="l-btns">
+                  <button class="l-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5s1.5-3 4-3 4 3 4 3-1.5 3-4 3-4-3-4-3z"/><circle cx="5" cy="5" r="1.5"/></svg></button>
+                  <button class="l-btn"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="2" width="5" height="6" rx="0.5"/><path d="M2 4h1"/></svg></button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Data Fields -->
+      <div class="sb-panel" id="t4" style="display:none">
+        <div class="sb-sec">
+          <div class="sb-label">Company</div>
+          <div class="df-list">
+            <div class="df-row" draggable="true"><span class="df-chip">{{company_name}}</span><span class="df-lbl">Company name</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{company_email}}</span><span class="df-lbl">Email</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{company_phone}}</span><span class="df-lbl">Phone</span></div>
+          </div>
+        </div>
+        <div class="sb-sec">
+          <div class="sb-label">Customer</div>
+          <div class="df-list">
+            <div class="df-row" draggable="true"><span class="df-chip">{{customer_name}}</span><span class="df-lbl">Customer name</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{customer_email}}</span><span class="df-lbl">Email</span></div>
+          </div>
+        </div>
+        <div class="sb-sec">
+          <div class="sb-label">Invoice</div>
+          <div class="df-list">
+            <div class="df-row" draggable="true"><span class="df-chip">{{invoice_no}}</span><span class="df-lbl">Invoice number</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{issue_date}}</span><span class="df-lbl">Issue date</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{due_date}}</span><span class="df-lbl">Due date</span></div>
+            <div class="df-row" draggable="true"><span class="df-chip">{{total}}</span><span class="df-lbl">Total amount</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-wrap" id="canvas-wrap">
+      <div class="canvas-inner">
+        <div class="canvas-paper" id="canvas-paper">
+          <div class="margin-guide"></div>
+
+          <!-- LOGO -->
+          <div class="cel sel" data-lbl="Logo" style="top:36px;left:36px;width:110px;height:42px">
+            <div class="cel-label">Logo</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="inv-logo-box">LOGO</div>
+          </div>
+
+          <!-- COMPANY INFO -->
+          <div class="cel" data-lbl="Company Info" style="top:84px;left:36px;width:210px;height:68px">
+            <div class="cel-label">Company Info</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="inv-co-name" data-bind-target="CompanyName">@Model.Company.Name</div>
+            <div class="inv-co-sub">
+                <span data-bind-target="CompanyAddress">@Model.Company.Address</span><br />
+                <span data-bind-target="CompanyEmail">@Model.Company.Email</span>
+            </div>
+          </div>
+
+          <!-- INVOICE INFO -->
+          <div class="cel" data-lbl="Invoice Info" style="top:36px;right:36px;width:200px;height:90px">
+            <div class="cel-label">Invoice Info</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="inv-title-num">INVOICE</div>
+            <div class="inv-meta-r">
+              <strong>No.</strong> <span data-bind-target="InvoiceNumber">@Model.InvoiceDetails.InvoiceNumber</span><br />
+              <strong>Issued:</strong> <span data-bind-target="IssueDate">@Model.InvoiceDetails.IssueDate</span><br />
+              <strong>Due:</strong> <span data-bind-target="DueDate">@Model.InvoiceDetails.DueDate</span>
+            </div>
+          </div>
+
+          <!-- CUSTOMER INFO -->
+          <div class="cel" data-lbl="Customer Info" style="top:190px;left:36px;width:210px;height:78px">
+            <div class="cel-label">Customer Info</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="inv-addr-lbl">Bill To</div>
+            <div class="inv-addr-name" data-bind-target="CustomerName">@Model.Customer.Name</div>
+            <div class="inv-addr-body">
+              Attn: <span data-bind-target="CustomerContact">@Model.Customer.ContactPerson</span><br />
+              <span data-bind-target="CustomerAddress">@Model.Customer.BillingAddress</span>
+            </div>
+          </div>
+
+          <!-- LINE ITEMS -->
+          <div class="cel" data-lbl="Line Items" style="top:300px;left:36px;right:36px;height:248px">
+            <div class="cel-label">Line Items</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <table class="inv-tbl">
+              <thead><tr><th style="width:42%">Description</th><th style="width:13%">Qty</th><th style="width:22%">Unit Price</th><th style="width:23%">Amount</th></tr></thead>
+              <tbody id="editor-line-items">
+                @foreach (var item in Model.LineItems)
+                {
+                  <tr>
+                    <td><div class="item-name">@item.Description</div></td>
+                    <td>@item.Qty</td>
+                    <td>$@item.UnitPrice.ToString("N2")</td>
+                    <td>$@item.Amount.ToString("N2")</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TOTALS -->
+          <div class="cel" data-lbl="Totals" style="top:566px;right:36px;width:220px;height:104px">
+            <div class="cel-label">Totals</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="tot-row"><span>Subtotal</span>$<span data-bind-target="Subtotal">@Model.Subtotal.ToString("N2")</span></div>
+            <div class="tot-row"><span>Tax (10%)</span>$<span data-bind-target="Tax">@Model.Tax.ToString("N2")</span></div>
+            <div class="tot-row"><span>Discount</span><span>−$0.00</span></div>
+            <div class="tot-row"><span>Total Due</span>$<span data-bind-target="Total">@Model.Total.ToString("N2")</span></div>
+          </div>
+
+          <!-- BANK DETAILS -->
+          <div class="cel" data-lbl="Bank Details" style="top:690px;left:36px;width:220px;height:88px">
+            <div class="cel-label">Bank Details</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="foot-lbl">Payment Details</div>
+            <div class="foot-body">First National Bank<br />Account: 1234-5678-9012<br />Routing: 021000021<br />SWIFT: FNBBUS33</div>
+          </div>
+
+          <!-- NOTES -->
+          <div class="cel" data-lbl="Notes" style="top:796px;left:36px;right:36px;height:58px">
+            <div class="cel-label">Notes</div>
+            <div class="rh rh-tl"></div><div class="rh rh-tr"></div><div class="rh rh-bl"></div><div class="rh rh-br"></div>
+            <div class="rh rh-tc"></div><div class="rh rh-bc"></div><div class="rh rh-ml"></div><div class="rh rh-mr"></div>
+            <div class="foot-lbl">Notes</div>
+            <div class="foot-body">Thank you for your business! Payment due within 30 days. Late payments subject to 1.5% monthly interest. Please reference invoice number on payment.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="rpanel">
+      <div class="rp-tabs">
+        <div class="rp-tab on" onclick="rpTab(this,'rp1')">Properties</div>
+        <div class="rp-tab" onclick="rpTab(this,'rp2')">Style</div>
+        <div class="rp-tab" onclick="rpTab(this,'rp3')">Data Binding</div>
+      </div>
+      <!-- Properties -->
+      <div class="rp-panel" id="rp1">
+        <div class="rp-sec">
+          <div class="rp-lbl">Position</div>
+          <div class="inp-pair">
+            <div class="inp-wrap"><span class="inp-prefix">X</span><input class="pf-inp" value="36"></div>
+            <div class="inp-wrap"><span class="inp-prefix">Y</span><input class="pf-inp" value="36"></div>
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Size</div>
+          <div class="inp-pair">
+            <div class="inp-wrap"><span class="inp-prefix">W</span><input class="pf-inp" value="110"></div>
+            <div class="inp-wrap"><span class="inp-prefix">H</span><input class="pf-inp" value="42"></div>
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Spacing</div>
+          <div class="inp-pair">
+            <div class="inp-wrap"><span class="inp-prefix">P</span><input class="pf-inp" value="0"></div>
+            <div class="inp-wrap"><span class="inp-prefix">M</span><input class="pf-inp" value="0"></div>
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Alignment</div>
+          <div class="align-row">
+            <button class="al-btn on" title="Left"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="3" x2="10" y2="3"/><line x1="2" y1="6" x2="7" y2="6"/><line x1="2" y1="9" x2="9" y2="9"/></svg></button>
+            <button class="al-btn" title="Center"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="1" y1="3" x2="11" y2="3"/><line x1="3" y1="6" x2="9" y2="6"/><line x1="2" y1="9" x2="10" y2="9"/></svg></button>
+            <button class="al-btn" title="Right"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="3" x2="10" y2="3"/><line x1="5" y1="6" x2="10" y2="6"/><line x1="3" y1="9" x2="10" y2="9"/></svg></button>
+            <button class="al-btn" title="Top"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="6" y1="1" x2="6" y2="11"/><polyline points="3,4 6,1 9,4"/></svg></button>
+            <button class="al-btn" title="Middle"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="1" y1="6" x2="11" y2="6"/><line x1="6" y1="2" x2="6" y2="10"/></svg></button>
+            <button class="al-btn" title="Bottom"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="6" y1="1" x2="6" y2="11"/><polyline points="3,8 6,11 9,8"/></svg></button>
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Page behavior</div>
+          <div class="toggle-row"><span class="tgl-lbl">Repeat on every page</span><div class="tgl"></div></div>
+          <div class="toggle-row"><span class="tgl-lbl">Fixed position</span><div class="tgl"></div></div>
+        </div>
+      </div>
+      <!-- Style -->
+      <div class="rp-panel" id="rp2" style="display:none">
+        <div class="rp-sec">
+          <div class="rp-lbl">Typography</div>
+          <select class="rp-sel"><option>Inter</option><option>DM Sans</option><option>Geist</option><option>Outfit</option><option>Lato</option></select>
+          <div class="fsz-row">
+            <input class="fsz" value="13">
+            <span style="font-size:11px;color:var(--text-3)">px</span>
+            <div class="style-btns">
+              <button class="sty-btn on">B</button>
+              <button class="sty-btn" style="font-style:italic">I</button>
+              <button class="sty-btn" style="text-decoration:underline">U</button>
+            </div>
+          </div>
+          <div class="color-row"><div class="cswatch" style="background:#111827"></div><input class="chex" value="#111827"></div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Background</div>
+          <div class="color-row"><div class="cswatch" style="background:transparent;border-style:dashed"></div><input class="chex" value="Transparent"></div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Border</div>
+          <div class="inp-pair" style="margin-bottom:6px">
+            <div class="inp-wrap"><span class="inp-prefix">W</span><input class="pf-inp" value="0"></div>
+            <div class="inp-wrap"><span class="inp-prefix">R</span><input class="pf-inp" value="0"></div>
+          </div>
+          <div class="color-row"><div class="cswatch" style="background:#E5E7EB"></div><input class="chex" value="#E5E7EB"></div>
+          <div class="rp-lbl" style="margin-top:10px;margin-bottom:6px">Radius (px)</div>
+          <div class="brad-grid">
+            <input class="brad" value="0" title="Top-left"><input class="brad" value="0" title="Top-right">
+            <input class="brad" value="0" title="Bottom-right"><input class="brad" value="0" title="Bottom-left">
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Table settings</div>
+          <div class="toggle-row"><span class="tgl-lbl">Colored header</span><div class="tgl on"></div></div>
+          <div class="toggle-row"><span class="tgl-lbl">Show Qty column</span><div class="tgl on"></div></div>
+          <div class="toggle-row"><span class="tgl-lbl">Show description</span><div class="tgl on"></div></div>
+          <div class="toggle-row"><span class="tgl-lbl">Striped rows</span><div class="tgl"></div></div>
+        </div>
+      </div>
+      <!-- Data Binding -->
+      <div class="rp-panel" id="rp3" style="display:none">
+        <div class="rp-sec">
+          <div class="rp-lbl">Bind element to</div>
+          <select class="rp-sel">
+            <option>— Select field —</option>
+            <option selected>Company name</option>
+            <option>Customer name</option>
+            <option>Invoice number</option>
+            <option>Issue date</option>
+            <option>Due date</option>
+            <option>Subtotal</option>
+            <option>Total</option>
+          </select>
+          <div class="bind-preview">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--indigo);margin-bottom:5px">Bound to</div>
+            <span class="bind-tag">{{company_name}}</span>
+            <div class="bind-preview-val">Preview: <strong>Acme Design Studio</strong></div>
+          </div>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-lbl">Active bindings</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="bind-tag" style="font-size:10px">{{company_name}}</span><span style="color:var(--text-2)">Company name</span></div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span class="bind-tag" style="font-size:10px">{{company_email}}</span><span style="color:var(--text-2)">Email</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <div class="zm-wrap">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" width="12" height="12"><circle cx="5" cy="5" r="4"/><line x1="8.5" y1="8.5" x2="11" y2="11"/></svg>
+      <input type="range" class="zm" min="25" max="200" value="100" id="zm-slider">
+      <span id="zm-val" style="min-width:34px">100%</span>
+    </div>
+    <div class="bb-sep"></div>
+    <button class="icon-btn on" onclick="toggleGrid()" title="Grid">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="1" width="5" height="5" rx="0.5"/><rect x="8" y="1" width="5" height="5" rx="0.5"/><rect x="1" y="8" width="5" height="5" rx="0.5"/><rect x="8" y="8" width="5" height="5" rx="0.5"/></svg>
+    </button>
+    <button class="icon-btn" title="Snap">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="4"/><line x1="7" y1="10" x2="7" y2="13"/><line x1="1" y1="7" x2="4" y2="7"/><line x1="10" y1="7" x2="13" y2="7"/></svg>
+    </button>
+    <div class="pg-nav">
+      <button class="pg-btn">&#8249;</button>
+      <span>Page 1 / 2</span>
+      <button class="pg-btn">&#8250;</button>
+      <button class="pg-btn" style="width:auto;padding:0 8px">+ Page</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- SCREEN 2: DATA -->
+<!-- ======================= -->
+<div class="screen" id="s2">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="logomark"><svg viewBox="0 0 16 16"><path d="M3 3h4v4H3zm6 0h4v4h-4zM3 9h4v4H3zm6 0h4v4h-4z"/></svg></div>
+      <span class="brand">InvoiceCraft</span>
+    </div>
+    <div class="tb-center">
+      <div class="mode-group">
+        <button class="mode-btn" onclick="go(1)">Design</button>
+        <button class="mode-btn on" onclick="go(2)">Data</button>
+        <button class="mode-btn" onclick="go(3)">Preview</button>
+      </div>
+    </div>
+    <div class="tb-right">
+      <button class="btn" onclick="go(1)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" width="12" height="12"><line x1="7" y1="2" x2="2" y2="6"/><line x1="2" y1="6" x2="7" y2="10"/><line x1="2" y1="6" x2="11" y2="6"/></svg>
+        Back to Editor
+      </button>
+      <button class="btn btn-primary" onclick="saveTemplate()">
+        Save Data
+      </button>
+    </div>
+  </div>
+  <div class="data-body">
+    <div class="data-wrap">
+      <!-- Company Information -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="dcard-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" color="#6366F1"><rect x="1" y="1" width="11" height="11" rx="2"/><path d="M4 5h5M4 8h3"/></svg></div>
+          <span class="dcard-title">Company Information</span>
+        </div>
+        <div class="dcard-body">
+          <div class="dgrid">
+            <div class="dfield"><label>Company name</label><input class="dinput" value="@Model.Company.Name" data-bind-src="CompanyName" oninput="updateBind(this)" /></div>
+            <div class="dfield"><label>Email</label><input class="dinput" value="@Model.Company.Email" data-bind-src="CompanyEmail" oninput="updateBind(this)" /></div>
+            <div class="dfield"><label>Phone</label><input class="dinput" value="@Model.Company.Phone" /></div>
+            <div class="dfield"><label>Website</label><input class="dinput" value="@Model.Company.Website" /></div>
+            <div class="dfield span2"><label>Address</label><input class="dinput" value="@Model.Company.Address" data-bind-src="CompanyAddress" oninput="updateBind(this)" /></div>
+          </div>
+        </div>
+      </div>
+      <!-- Customer Information -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="dcard-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" color="#6366F1"><circle cx="6.5" cy="4.5" r="2.5"/><path d="M1.5 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></div>
+          <span class="dcard-title">Customer Information</span>
+        </div>
+        <div class="dcard-body">
+          <div class="dgrid">
+            <div class="dfield"><label>Customer name</label><input class="dinput" value="@Model.Customer.Name" data-bind-src="CustomerName" oninput="updateBind(this)" /></div>
+            <div class="dfield"><label>Contact person</label><input class="dinput" value="@Model.Customer.ContactPerson" data-bind-src="CustomerContact" oninput="updateBind(this)" /></div>
+            <div class="dfield"><label>Email</label><input class="dinput" value="@Model.Customer.Email" /></div>
+            <div class="dfield"><label>Phone</label><input class="dinput" value="@Model.Customer.Phone" /></div>
+            <div class="dfield span2"><label>Billing address</label><input class="dinput" value="@Model.Customer.BillingAddress" data-bind-src="CustomerAddress" oninput="updateBind(this)" /></div>
+          </div>
+        </div>
+      </div>
+      <!-- Invoice Details -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="dcard-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" color="#6366F1"><path d="M2 1h9v11H2z"/><path d="M4 4h5M4 7h3"/></svg></div>
+          <span class="dcard-title">Invoice Details</span>
+        </div>
+        <div class="dcard-body">
+          <div class="dgrid">
+            <div class="dfield"><label>Invoice number</label><input class="dinput" value="@Model.InvoiceDetails.InvoiceNumber" data-bind-src="InvoiceNumber" oninput="updateBind(this)" /></div>
+            <div class="dfield">
+              <label>Currency</label>
+              <select class="dinput">
+                <option selected>USD ($)</option>
+                <option>EUR (€)</option>
+                <option>GBP (£)</option>
+              </select>
+            </div>
+            <div class="dfield"><label>Issue date</label><input class="dinput" type="date" value="@Model.InvoiceDetails.IssueDate" data-bind-src="IssueDate" oninput="updateBind(this)" /></div>
+            <div class="dfield"><label>Due date</label><input class="dinput" type="date" value="@Model.InvoiceDetails.DueDate" data-bind-src="DueDate" oninput="updateBind(this)" /></div>
+          </div>
+        </div>
+      </div>
+      <!-- Line Items -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="dcard-icon"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" color="#6366F1"><rect x="1" y="2" width="11" height="9" rx="1"/><line x1="1" y1="5" x2="12" y2="5"/><line x1="4" y1="5" x2="4" y2="11"/></svg></div>
+          <span class="dcard-title">Line Items</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="items-tbl">
+            <thead>
+              <tr><th style="width:40%">Description</th><th style="width:12%">Qty</th><th style="width:20%">Unit price</th><th style="width:18%">Amount</th><th style="width:10%"></th></tr>
+            </thead>
+            <tbody id="items-tbody">
+              @foreach (var item in Model.LineItems)
+              {
+                <tr>
+                  <td><input value="@item.Description" /></td>
+                  <td><input value="@item.Qty" /></td>
+                  <td><input value="$@item.UnitPrice.ToString("N2")" /></td>
+                  <td style="font-weight:600;font-size:12px">$@item.Amount.ToString("N2")</td>
+                  <td><button class="rm-btn" onclick="this.closest('tr').remove()"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="2" x2="9" y2="9"/><line x1="9" y1="2" x2="2" y2="9"/></svg></button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <button class="add-btn" onclick="addItem()">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="2" x2="6" y2="10"/><line x1="2" y1="6" x2="10" y2="6"/></svg>
+          Add item
+        </button>
+        <div class="totals-foot">
+          <div class="totals-mini">
+            <div class="tm-row"><span>Subtotal</span><span>$@Model.Subtotal.ToString("N2")</span></div>
+            <div class="tm-row"><span>Tax (10%)</span><span>$@Model.Tax.ToString("N2")</span></div>
+            <div class="tm-row"><span>Discount</span><span>—</span></div>
+            <div class="tm-row grand"><span>Total</span><span>$@Model.Total.ToString("N2")</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- SCREEN 3: PREVIEW -->
+<!-- ======================= -->
+<div class="screen" id="s3">
+  <div class="preview-top">
+    <button class="prev-btn" onclick="go(1)">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="7" y1="2" x2="2" y2="6"/><line x1="2" y1="6" x2="7" y2="10"/><line x1="2" y1="6" x2="11" y2="6"/></svg>
+      Editor
+    </button>
+    <span class="prev-title">Preview — Professional Invoice v2</span>
+    <button class="prev-btn">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><rect x="1" y="1" width="10" height="10" rx="1"/><line x1="4" y1="6" x2="8" y2="6"/><line x1="6" y1="4" x2="6" y2="8"/></svg>
+      Print
+    </button>
+    <button class="prev-btn dl">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><path d="M6 1v7"/><path d="M3 6l3 3 3-3"/><path d="M1.5 10.5h9"/></svg>
+      Download PDF
+    </button>
+  </div>
+  <div class="preview-area">
+    <div class="prev-paper">
+      <div class="ph">
+        <div>
+          <div class="p-logo">LOGO</div>
+          <div class="p-company">
+            <span data-bind-target="CompanyName">@Model.Company.Name</span><br />
+            <span data-bind-target="CompanyAddress">@Model.Company.Address</span><br />
+            <span data-bind-target="CompanyEmail">@Model.Company.Email</span>
+          </div>
+        </div>
+        <div>
+          <div class="p-inv-title">INVOICE</div>
+          <div class="p-inv-meta">
+            No. <span data-bind-target="InvoiceNumber">@Model.InvoiceDetails.InvoiceNumber</span><br />
+            Issued: <span data-bind-target="IssueDate">@Model.InvoiceDetails.IssueDate</span><br />
+            Due: <span data-bind-target="DueDate">@Model.InvoiceDetails.DueDate</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-addrs">
+        <div class="p-addr">
+          <div class="p-addr-lbl">Bill To</div>
+          <div class="p-addr-name" data-bind-target="CustomerName">@Model.Customer.Name</div>
+          <div class="p-addr-body">
+            Attn: <span data-bind-target="CustomerContact">@Model.Customer.ContactPerson</span><br />
+            <span data-bind-target="CustomerAddress">@Model.Customer.BillingAddress</span>
+          </div>
+        </div>
+        <div class="p-addr">
+          <div class="p-addr-lbl">Payment Details</div>
+          <div class="p-addr-name">First National Bank</div>
+          <div class="p-addr-body">Account: 1234-5678-9012<br />Routing: 021000021<br />SWIFT: FNBBUS33</div>
+        </div>
+      </div>
+      <table class="p-tbl">
+        <thead><tr><th style="width:42%">Description</th><th style="width:13%">Qty</th><th style="width:22%">Unit Price</th><th style="width:23%">Amount</th></tr></thead>
+        <tbody id="preview-line-items">
+          @foreach (var item in Model.LineItems)
+          {
+            <tr>
+              <td>@item.Description</td>
+              <td>@item.Qty</td>
+              <td>$@item.UnitPrice.ToString("N2")</td>
+              <td>$@item.Amount.ToString("N2")</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="p-tots">
+        <div class="p-tots-inner">
+          <div class="p-tot-row"><span>Subtotal</span>$<span data-bind-target="Subtotal">@Model.Subtotal.ToString("N2")</span></div>
+          <div class="p-tot-row"><span>Tax (10%)</span>$<span data-bind-target="Tax">@Model.Tax.ToString("N2")</span></div>
+          <div class="p-tot-row"><span>Discount</span><span>—</span></div>
+          <div class="p-tot-row"><span>Total Due</span>$<span data-bind-target="Total">@Model.Total.ToString("N2")</span></div>
+        </div>
+      </div>
+      <div class="p-foot">
+        <div class="p-foot-block">
+          <div class="p-foot-lbl">Notes</div>
+          <div class="p-foot-body">Thank you for your business! Payment is due within 30 days. Late payments are subject to a 1.5% monthly interest charge. Please reference invoice number on payment.</div>
+        </div>
+        <div class="p-foot-block">
+          <div class="p-foot-lbl">Terms &amp; Conditions</div>
+          <div class="p-foot-body">All work subject to standard terms. Disputes must be raised within 7 days of receipt. Governing law: California, USA.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- SCREEN 4: HISTORY -->
+<!-- ======================= -->
+<div class="screen" id="s4">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="logomark"><svg viewBox="0 0 16 16"><path d="M3 3h4v4H3zm6 0h4v4h-4zM3 9h4v4H3zm6 0h4v4h-4z"/></svg></div>
+      <span class="brand">InvoiceCraft</span>
+    </div>
+    <div class="tb-right">
+      <button class="btn" onclick="go(1)">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" width="12" height="12"><line x1="7" y1="2" x2="2" y2="6"/><line x1="2" y1="6" x2="7" y2="10"/><line x1="2" y1="6" x2="11" y2="6"/></svg>
+        Back to Editor
+      </button>
+    </div>
+  </div>
+  <div class="vh-body">
+    <div class="vh-dimmed">
+      <div class="vh-fake-canvas">
+        <div class="vhf-line acc"></div><div class="vhf-line" style="width:55%"></div><div class="vhf-line" style="width:40%"></div>
+        <div class="vhf-block"></div>
+        <div class="vhf-line" style="width:90%;margin-top:12px"></div><div class="vhf-line" style="width:75%"></div><div class="vhf-line" style="width:82%"></div>
+      </div>
+    </div>
+    <div class="vh-panel">
+      <div class="vh-head">
+        <span class="vh-title">Version history</span>
+        <button class="vh-close" onclick="go(1)">
+          <svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="2" y1="2" x2="9" y2="9"/><line x1="9" y1="2" x2="2" y2="9"/></svg>
+        </button>
+      </div>
+      <div class="vh-list">
+        <!-- Manual population for visual structure -->
+        <div class="vhi cur">
+            <div class="vhi-top">
+              <span class="vhi-name">Version 5</span>
+              <span class="vhi-badge">Current</span>
+            </div>
+            <div class="vhi-date">Today, 2:34 PM · Auto-saved</div>
+            <div class="vhi-changes">Updated totals layout, added discount row, adjusted header font</div>
+            <div class="vhi-actions">
+              <button class="vha-btn restore">Restore</button>
+              <button class="vha-btn">Duplicate</button>
+            </div>
+        </div>
+        <div class="vhi">
+            <div class="vhi-top">
+              <span class="vhi-name">Version 4</span>
+            </div>
+            <div class="vhi-date">Today, 11:12 AM</div>
+            <div class="vhi-changes">Moved bank details below totals, updated logo size to 90px</div>
+            <div class="vhi-actions">
+              <button class="vha-btn restore">Restore</button>
+              <button class="vha-btn">Duplicate</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
